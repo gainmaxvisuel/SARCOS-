@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1a8c">
+
+  <title>Connexion - HBD</title>
+
+  <style>
+    :root {
+      --navy: #0b1a8c;
+      --navy-dark: #081268;
+      --navy-soft: rgba(11, 26, 140, .08);
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbe1ee;
+      --field: #f6f8fd;
+      --white: #ffffff;
+      --danger: #b42318;
+      --ok: #067647;
+
+      --field-h: clamp(42px, 6.6dvh, 52px);
+      --gap: clamp(9px, 1.9dvh, 17px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #eef1f9;
+      color: var(--ink);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* ---------- Écran fixe ---------- */
+    .page {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      height: 100dvh;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding:
+        calc(clamp(10px, 2.4dvh, 24px) + env(safe-area-inset-top, 0px))
+        24px
+        calc(clamp(10px, 2.4dvh, 24px) + env(safe-area-inset-bottom, 0px));
+      overflow: hidden;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: var(--navy);
+    }
+
+    /* ---------- En-tête ---------- */
+    .brand {
+      display: flex;
+      justify-content: center;
+      margin-bottom: clamp(6px, 1.6dvh, 16px);
+    }
+
+    .logo {
+      height: clamp(64px, 14dvh, 118px);
+      width: auto;
+      max-width: 70%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .title {
+      text-align: center;
+      font-size: clamp(22px, 3.8dvh, 28px);
+      font-weight: 800;
+      letter-spacing: -.3px;
+      color: var(--navy);
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: clamp(12px, 1.8dvh, 13.5px);
+      line-height: 1.4;
+      margin: 4px 0 clamp(10px, 2.6dvh, 24px);
+    }
+
+    /* ---------- Formulaire ---------- */
+    .form-group {
+      margin-bottom: var(--gap);
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 5px;
+    }
+
+    select,
+    input {
+      width: 100%;
+      height: var(--field-h);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      background: var(--field);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 16px;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s, background .15s;
+    }
+
+    select {
+      padding: 0 34px 0 12px;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    input {
+      padding: 0 14px;
+    }
+
+    input::placeholder {
+      color: #9aa5b8;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: var(--navy);
+      background-color: var(--white);
+      box-shadow: 0 0 0 3.5px var(--navy-soft);
+    }
+
+    .phone-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dial {
+      width: 98px;
+      flex: none;
+      height: var(--field-h);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      background: #eef1f9;
+      color: #9aa5b8;
+      font-weight: 700;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dial.active {
+      color: var(--navy);
+    }
+
+    .password-box {
+      position: relative;
+    }
+
+    .password-box input {
+      padding-right: 48px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 46px;
+      height: var(--field-h);
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-password svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .toggle-password:focus-visible {
+      outline: 2px solid var(--navy);
+      outline-offset: -4px;
+      border-radius: 10px;
+    }
+
+    .forgot {
+      text-align: right;
+      margin: calc(var(--gap) * -.4) 0 var(--gap);
+    }
+
+    .forgot a {
+      color: var(--navy);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .submit-btn {
+      width: 100%;
+      height: calc(var(--field-h) + 4px);
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+      color: #fff;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(11, 26, 140, .28);
+      transition: transform .12s, opacity .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .submit-btn:active {
+      transform: scale(.98);
+    }
+
+    .submit-btn:disabled {
+      opacity: .7;
+      cursor: not-allowed;
+    }
+
+    .submit-btn:focus-visible {
+      outline: 3px solid var(--navy-soft);
+      outline-offset: 2px;
+    }
+
+    .loading {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid rgba(255, 255, 255, .35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .register {
+      text-align: center;
+      margin-top: clamp(10px, 2.2dvh, 20px);
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    .register a {
+      color: var(--navy);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .security {
+      text-align: center;
+      margin-top: clamp(6px, 1.4dvh, 12px);
+      color: #9aa5b8;
+      font-size: 11.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .security svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* ---------- Message flottant (ne décale rien) ---------- */
+    .message {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      z-index: 10;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .14);
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+    }
+
+    .message.error {
+      background: #fff0ef;
+      color: var(--danger);
+      border: 1px solid #ffc9c5;
+    }
+
+    .message.success {
+      background: #ecfdf3;
+      color: var(--ok);
+      border: 1px solid #abefc6;
+    }
+
+    .message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ---------- Petits écrans ---------- */
+    @media (max-height: 600px) {
+      .subtitle { display: none; }
+      .security { display: none; }
+      .page::before { height: 4px; }
+    }
+
+    @media (max-height: 520px) {
+      .title { display: none; }
+    }
+
+    /* ---------- Ordinateur ---------- */
+    @media (min-width: 481px) {
+      .page {
+        height: min(100dvh - 40px, 680px);
+        border-radius: 24px;
+        box-shadow: 0 18px 50px rgba(11, 26, 140, .14);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation-duration: 1.5s !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <div id="message" class="message" role="alert" aria-live="assertive"></div>
+
+    <div class="brand">
+      <img
+        class="logo"
+        src="https://uzgvaqewovipxorucjut.supabase.co/functions/v1/platform-logo"
+        alt="HBD"
+      >
+    </div>
+
+    <h1 class="title">Connexion</h1>
+
+    <p class="subtitle">Connectez-vous à votre compte HBD.</p>
+
+    <form id="loginForm" novalidate>
+
+      <div class="form-group">
+        <label for="country">Pays</label>
+        <select id="country" required>
+          <option value="">Chargement...</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Numéro de téléphone</label>
+        <div class="phone-row">
+          <div id="dialCode" class="dial" aria-label="Indicatif">+--</div>
+
+          <input
+            id="phone"
+            type="tel"
+            inputmode="numeric"
+            autocomplete="tel"
+            placeholder="Votre numéro"
+            maxlength="15"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <div class="password-box">
+          <input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Votre mot de passe"
+            minlength="6"
+            required
+          >
+          <button type="button" class="toggle-password" id="togglePassword" aria-label="Afficher le mot de passe"></button>
+        </div>
+      </div>
+
+      <div class="forgot">
+        <a href="#" id="forgotLink">Mot de passe oublié ?</a>
+      </div>
+
+      <button type="submit" class="submit-btn" id="loginBtn">
+        <span id="buttonText">Se connecter</span>
+        <span class="loading" id="loading"></span>
+      </button>
+
+    </form>
+
+    <div class="register">
+      Pas encore de compte ?
+      <a href="inscription.html">Créer un compte</a>
+    </div>
+
+    <div class="security">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Connexion sécurisée
+    </div>
+
+  </main>
+
+<script>
+  const FUNCTIONS_BASE = "https://uzgvaqewovipxorucjut.supabase.co/functions/v1";
+  const countriesUrl = `${FUNCTIONS_BASE}/countries`;
+  const loginUrl = `${FUNCTIONS_BASE}/login`;
+
+  const countrySelect = document.getElementById("country");
+  const dialCode = document.getElementById("dialCode");
+  const phoneInput = document.getElementById("phone");
+  const passwordInput = document.getElementById("password");
+  const loginForm = document.getElementById("loginForm");
+  const loginBtn = document.getElementById("loginBtn");
+  const buttonText = document.getElementById("buttonText");
+  const loading = document.getElementById("loading");
+  const message = document.getElementById("message");
+  const forgotLink = document.getElementById("forgotLink");
+
+  let messageTimer = null;
+
+  /* ---------------- Message flottant ---------------- */
+
+  function showMessage(text, type = "error") {
+    message.className = `message ${type} show`;
+    message.textContent = text;
+    clearTimeout(messageTimer);
+
+    if (type !== "success") {
+      messageTimer = setTimeout(clearMessage, 5000);
+    }
+  }
+
+  function clearMessage() {
+    message.classList.remove("show");
+  }
+
+  /* ---------------- Chargement des pays ---------------- */
+
+  async function loadCountries() {
+    try {
+      const response = await fetch(countriesUrl, { method: "GET" });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Impossible de charger les pays.");
+      }
+
+      const countries = Array.isArray(data) ? data : (data.countries || []);
+
+      countrySelect.innerHTML = '<option value="">Sélectionnez votre pays</option>';
+
+      countries.forEach(country => {
+        const option = document.createElement("option");
+        option.value = country.code;
+        option.textContent = `${country.name} (${country.dial_code})`;
+        option.dataset.dialCode = country.dial_code;
+        countrySelect.appendChild(option);
+      });
+
+    } catch (error) {
+      countrySelect.innerHTML = '<option value="">Impossible de charger les pays</option>';
+      showMessage(error.message || "Erreur lors du chargement des pays.");
+    }
+  }
+
+  countrySelect.addEventListener("change", () => {
+    const selected = countrySelect.options[countrySelect.selectedIndex];
+    const code = selected?.dataset?.dialCode || "";
+
+    dialCode.textContent = code || "+--";
+    dialCode.classList.toggle("active", !!code);
+  });
+
+  phoneInput.addEventListener("input", () => {
+    phoneInput.value = phoneInput.value.replace(/\D/g, "");
+  });
+
+  /* ---------------- Afficher / masquer le mot de passe ---------------- */
+
+  const EYE =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+  const EYE_OFF =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+
+  const togglePassword = document.getElementById("togglePassword");
+  togglePassword.innerHTML = EYE;
+
+  togglePassword.addEventListener("click", () => {
+    const hidden = passwordInput.type === "password";
+    passwordInput.type = hidden ? "text" : "password";
+    togglePassword.innerHTML = hidden ? EYE_OFF : EYE;
+    togglePassword.setAttribute(
+      "aria-label",
+      hidden ? "Masquer le mot de passe" : "Afficher le mot de passe"
+    );
+  });
+
+  /* ---------------- Connexion ---------------- */
+
+  function setLoading(isLoading) {
+    loginBtn.disabled = isLoading;
+    buttonText.style.display = isLoading ? "none" : "inline";
+    loading.style.display = isLoading ? "block" : "none";
+  }
+
+  loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    clearMessage();
+
+    const countryCode = countrySelect.value.trim().toUpperCase();
+    const phone = phoneInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!countryCode) {
+      showMessage("Veuillez sélectionner votre pays.");
+      return;
+    }
+
+    if (!/^[0-9]{6,15}$/.test(phone)) {
+      showMessage("Veuillez entrer un numéro de téléphone valide.");
+      phoneInput.focus();
+      return;
+    }
+
+    if (password.length < 6) {
+      showMessage("Le mot de passe doit contenir au moins 6 caractères.");
+      passwordInput.focus();
+      return;
+    }
+
+    if (loginBtn.disabled) return;
+    setLoading(true);
+
+    try {
+      const response = await fetch(loginUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          country_code: countryCode,
+          phone: phone,
+          password: password
+        })
+      });
+
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || "Identifiants incorrects.");
+      }
+
+      if (!data.session_token || !data.user_id) {
+        throw new Error("La réponse du serveur est incomplète.");
+      }
+
+      /* Session créée côté serveur : aucun token Supabase dans la page */
+      sessionStorage.setItem("hbd_session_token", data.session_token);
+      sessionStorage.setItem("hbd_user_id", data.user_id);
+
+      showMessage("Connexion réussie. Redirection...", "success");
+
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 500);
+
+    } catch (error) {
+      showMessage(error.message || "Impossible de se connecter.");
+      setLoading(false);
+    }
+  });
+
+  forgotLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    showMessage("La récupération du mot de passe sera bientôt disponible.");
+  });
+
+  loadCountries();
+</script>
+
+</body>
+</html>
