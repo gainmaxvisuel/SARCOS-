@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1a8c">
+
+  <title>Créer un compte - HBD</title>
+
+  <style>
+    :root {
+      --navy: #0b1a8c;
+      --navy-dark: #081268;
+      --navy-soft: rgba(11, 26, 140, .08);
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbe1ee;
+      --field: #f6f8fd;
+      --white: #ffffff;
+      --danger: #b42318;
+
+      /* Hauteur des champs : s'adapte à la hauteur de l'écran */
+      --field-h: clamp(40px, 6.2dvh, 48px);
+      --gap: clamp(7px, 1.5dvh, 13px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;           /* pas de scroll */
+      overscroll-behavior: none;
+    }
+
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #eef1f9;
+      color: var(--ink);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* ---------- Écran fixe ---------- */
+    .page {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      height: 100dvh;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding:
+        calc(clamp(10px, 2.2dvh, 22px) + env(safe-area-inset-top, 0px))
+        24px
+        calc(clamp(10px, 2.2dvh, 22px) + env(safe-area-inset-bottom, 0px));
+      overflow: hidden;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: var(--navy);
+    }
+
+    /* ---------- En-tête ---------- */
+    .brand {
+      display: flex;
+      justify-content: center;
+      margin-bottom: clamp(4px, 1.2dvh, 12px);
+    }
+
+    .logo {
+      height: clamp(58px, 12dvh, 104px);
+      width: auto;
+      max-width: 70%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .title {
+      text-align: center;
+      font-size: clamp(21px, 3.6dvh, 26px);
+      font-weight: 800;
+      letter-spacing: -.3px;
+      color: var(--navy);
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: clamp(12px, 1.8dvh, 13.5px);
+      line-height: 1.4;
+      margin: 4px 0 clamp(8px, 2dvh, 18px);
+    }
+
+    /* ---------- Formulaire ---------- */
+    .form-group {
+      margin-bottom: var(--gap);
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+
+    .optional {
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    select,
+    input {
+      width: 100%;
+      height: var(--field-h);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      background: var(--field);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 16px;            /* évite le zoom automatique sur mobile */
+      outline: none;
+      transition: border-color .15s, box-shadow .15s, background .15s;
+    }
+
+    select {
+      padding: 0 12px;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 34px;
+    }
+
+    input {
+      padding: 0 14px;
+    }
+
+    input::placeholder {
+      color: #9aa5b8;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: var(--navy);
+      background-color: var(--white);
+      box-shadow: 0 0 0 3.5px var(--navy-soft);
+    }
+
+    .phone-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .phone-row select {
+      width: 98px;
+      flex: none;
+      padding-right: 26px;
+      background-position: right 8px center;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .phone-row select:disabled {
+      opacity: 1;
+      color: #9aa5b8;
+    }
+
+    .password-box {
+      position: relative;
+    }
+
+    .password-box input {
+      padding-right: 48px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 46px;
+      height: var(--field-h);
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-password svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .toggle-password:focus-visible {
+      outline: 2px solid var(--navy);
+      outline-offset: -4px;
+      border-radius: 10px;
+    }
+
+    .referral {
+      text-transform: lowercase;
+      letter-spacing: 1.5px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      height: calc(var(--field-h) + 4px);
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+      color: #fff;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      cursor: pointer;
+      margin-top: 2px;
+      box-shadow: 0 6px 16px rgba(11, 26, 140, .28);
+      transition: transform .12s, opacity .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .submit-btn:active {
+      transform: scale(.98);
+    }
+
+    .submit-btn:disabled {
+      opacity: .7;
+      cursor: not-allowed;
+    }
+
+    .submit-btn:focus-visible {
+      outline: 3px solid var(--navy-soft);
+      outline-offset: 2px;
+    }
+
+    .loading {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid rgba(255, 255, 255, .35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: clamp(8px, 1.8dvh, 16px);
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    .login-link a {
+      color: var(--navy);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* ---------- Message d'erreur : flottant, ne décale rien ---------- */
+    .message {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      z-index: 10;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+      text-align: center;
+      background: #fff0ef;
+      color: var(--danger);
+      border: 1px solid #ffc9c5;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .14);
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+    }
+
+    .message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ---------- Très petits écrans ---------- */
+    @media (max-height: 640px) {
+      .subtitle { display: none; }
+      .title { margin-top: 2px; }
+      .page::before { height: 4px; }
+    }
+
+    @media (max-height: 560px) {
+      .title { display: none; }
+      label { font-size: 11.5px; margin-bottom: 3px; }
+    }
+
+    /* ---------- Ordinateur ---------- */
+    @media (min-width: 481px) {
+      .page {
+        height: min(100dvh - 40px, 720px);
+        border-radius: 24px;
+        box-shadow: 0 18px 50px rgba(11, 26, 140, .14);
+        padding-top: 22px;
+        padding-bottom: 22px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation-duration: 1.5s !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <div id="message" class="message" role="alert" aria-live="assertive"></div>
+
+    <div class="brand">
+      <img
+        id="logo"
+        class="logo"
+        src="https://uzgvaqewovipxorucjut.supabase.co/functions/v1/platform-logo"
+        alt="HBD"
+      >
+    </div>
+
+    <h1 class="title">Créer un compte</h1>
+
+    <p class="subtitle">Inscrivez-vous pour accéder à votre espace HBD.</p>
+
+    <form id="registerForm" novalidate>
+
+      <div class="form-group">
+        <label for="country">Pays</label>
+        <select id="country" required>
+          <option value="">Chargement...</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Numéro de téléphone</label>
+        <div class="phone-row">
+          <select id="dialCode" disabled aria-label="Indicatif">
+            <option value="">+---</option>
+          </select>
+
+          <input
+            id="phone"
+            type="tel"
+            inputmode="numeric"
+            autocomplete="tel"
+            placeholder="Chiffres uniquement"
+            maxlength="15"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <div class="password-box">
+          <input
+            id="password"
+            type="password"
+            autocomplete="new-password"
+            placeholder="6 caractères minimum"
+            minlength="6"
+            required
+          >
+          <button type="button" class="toggle-password" id="togglePassword" aria-label="Afficher le mot de passe"></button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirmer le mot de passe</label>
+        <div class="password-box">
+          <input
+            id="confirmPassword"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Saisissez-le à nouveau"
+            minlength="6"
+            required
+          >
+          <button type="button" class="toggle-password" id="toggleConfirmPassword" aria-label="Afficher le mot de passe"></button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="referral">Code de parrainage <span class="optional">(facultatif)</span></label>
+        <input
+          id="referral"
+          class="referral"
+          type="text"
+          autocomplete="off"
+          autocapitalize="none"
+          placeholder="5 lettres"
+          maxlength="5"
+        >
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <span id="buttonText">Créer mon compte</span>
+        <span class="loading" id="loading"></span>
+      </button>
+
+    </form>
+
+    <div class="login-link">
+      Vous avez déjà un compte ?
+      <a href="login.html">Se connecter</a>
+    </div>
+
+  </main>
+
+<script>
+  /*
+    ============================================================
+    HBD — CONFIGURATION SERVEUR
+    Aucune clé Supabase ici : tout passe par les Edge Functions.
+    ============================================================
+  */
+
+  const FUNCTIONS_BASE = "https://uzgvaqewovipxorucjut.supabase.co/functions/v1";
+  const REGISTER_URL = `${FUNCTIONS_BASE}/register`;
+  const COUNTRIES_URL = `${FUNCTIONS_BASE}/countries`;
+
+  const countrySelect = document.getElementById("country");
+  const dialCodeSelect = document.getElementById("dialCode");
+  const phoneInput = document.getElementById("phone");
+  const passwordInput = document.getElementById("password");
+  const confirmPasswordInput = document.getElementById("confirmPassword");
+  const referralInput = document.getElementById("referral");
+
+  const form = document.getElementById("registerForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const buttonText = document.getElementById("buttonText");
+  const loading = document.getElementById("loading");
+  const message = document.getElementById("message");
+
+  let messageTimer = null;
+
+  /* ---------------- Message d'erreur (flottant) ---------------- */
+
+  function showError(text) {
+    message.textContent = text;
+    message.classList.add("show");
+    clearTimeout(messageTimer);
+    messageTimer = setTimeout(clearMessage, 5000);
+  }
+
+  function clearMessage() {
+    message.classList.remove("show");
+  }
+
+  /* ---------------- Chargement des pays ---------------- */
+
+  async function loadCountries() {
+    try {
+      const response = await fetch(COUNTRIES_URL, {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.error || "Impossible de charger les pays.");
+      }
+
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error("Aucun pays disponible.");
+      }
+
+      countrySelect.innerHTML = '<option value="">Sélectionnez votre pays</option>';
+
+      data.forEach(country => {
+        const option = document.createElement("option");
+        option.value = country.code;
+        option.textContent = `${country.name} (${country.dial_code})`;
+        option.dataset.dialCode = country.dial_code;
+        countrySelect.appendChild(option);
+      });
+
+    } catch (error) {
+      console.error(error);
+      countrySelect.innerHTML = '<option value="">Erreur de chargement</option>';
+      showError(error.message || "Impossible de charger la liste des pays.");
+    }
+  }
+
+  /* ---------------- Pays → indicatif ---------------- */
+
+  countrySelect.addEventListener("change", () => {
+    const selected = countrySelect.options[countrySelect.selectedIndex];
+    const dialCode = selected?.dataset?.dialCode || "";
+
+    dialCodeSelect.innerHTML = "";
+
+    const option = document.createElement("option");
+    option.value = dialCode;
+    option.textContent = dialCode || "+---";
+    dialCodeSelect.appendChild(option);
+
+    dialCodeSelect.disabled = !dialCode;
+  });
+
+  /* ---------------- Numéro : chiffres uniquement ---------------- */
+
+  phoneInput.addEventListener("input", () => {
+    phoneInput.value = phoneInput.value.replace(/\D/g, "");
+  });
+
+  /* ---------------- Code de parrainage ---------------- */
+
+  function cleanReferral(value) {
+    return String(value || "")
+      .replace(/[^a-zA-Z]/g, "")
+      .toLowerCase()
+      .slice(0, 5);
+  }
+
+  referralInput.addEventListener("input", () => {
+    referralInput.value = cleanReferral(referralInput.value);
+  });
+
+  /* Lien d'invitation : remplit automatiquement le code (?ref=abcde) */
+  (function prefillReferral() {
+    const params = new URLSearchParams(window.location.search);
+    const raw =
+      params.get("ref") ||
+      params.get("code") ||
+      params.get("invite") ||
+      params.get("referral") ||
+      params.get("parrain");
+
+    if (raw) {
+      referralInput.value = cleanReferral(raw);
+    }
+  })();
+
+  /* ---------------- Afficher / masquer le mot de passe ---------------- */
+
+  const EYE =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+  const EYE_OFF =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+
+  function setupPasswordToggle(buttonId, inputId) {
+    const button = document.getElementById(buttonId);
+    const input = document.getElementById(inputId);
+
+    button.innerHTML = EYE;
+
+    button.addEventListener("click", () => {
+      const hidden = input.type === "password";
+      input.type = hidden ? "text" : "password";
+      button.innerHTML = hidden ? EYE_OFF : EYE;
+      button.setAttribute(
+        "aria-label",
+        hidden ? "Masquer le mot de passe" : "Afficher le mot de passe"
+      );
+    });
+  }
+
+  setupPasswordToggle("togglePassword", "password");
+  setupPasswordToggle("toggleConfirmPassword", "confirmPassword");
+
+  /* ---------------- Soumission ---------------- */
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    clearMessage();
+
+    const countryCode = countrySelect.value.trim().toUpperCase();
+    const phone = phoneInput.value.trim();
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+    const referralCode = referralInput.value.trim().toLowerCase();
+
+    if (!countryCode) {
+      showError("Veuillez sélectionner votre pays.");
+      return;
+    }
+
+    if (!/^[0-9]{6,15}$/.test(phone)) {
+      showError("Numéro de téléphone invalide.");
+      return;
+    }
+
+    if (password.length < 6) {
+      showError("Le mot de passe doit contenir au moins 6 caractères.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      showError("Les deux mots de passe ne correspondent pas.");
+      return;
+    }
+
+    if (referralCode && !/^[a-z]{5}$/.test(referralCode)) {
+      showError("Le code de parrainage doit contenir 5 lettres.");
+      return;
+    }
+
+    /* Anti double-clic */
+    if (submitBtn.disabled) return;
+
+    submitBtn.disabled = true;
+    buttonText.style.display = "none";
+    loading.style.display = "block";
+
+    try {
+      const response = await fetch(REGISTER_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          country_code: countryCode,
+          phone: phone,
+          password: password,
+          referral_code: referralCode || null
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data?.error || data?.message || "Impossible de créer le compte."
+        );
+      }
+
+      /* Le serveur est la source de vérité */
+      const sessionToken =
+        data?.session_token || data?.sessionToken || data?.token || null;
+
+      const userId = data?.user_id || data?.userId || null;
+
+      if (sessionToken) sessionStorage.setItem("hbd_session_token", sessionToken);
+      if (userId) sessionStorage.setItem("hbd_user_id", userId);
+
+      window.location.href = "dashboard.html";
+
+    } catch (error) {
+      console.error("HBD REGISTER:", error);
+
+      showError(
+        (error && error.message) ||
+        "Une erreur est survenue pendant l'inscription."
+      );
+
+      submitBtn.disabled = false;
+      buttonText.style.display = "inline";
+      loading.style.display = "none";
+    }
+  });
+
+  /* ---------------- Initialisation ---------------- */
+
+  loadCountries();
+</script>
+
+</body>
+        </html>
+        
