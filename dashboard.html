@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Accueil - HBD</title>
+
+  <style>
+    :root {
+      --navy: #0b1a8c;
+      --navy-dark: #081268;
+      --navy-deep: #050c4a;
+      --navy-soft: rgba(11, 26, 140, .08);
+      --navy-tint: #eef1fb;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --faint: #94a3b8;
+      --line: #e6eaf3;
+      --bg: #f3f5fb;
+      --white: #ffffff;
+      --green: #067647;
+      --green-bg: #ecfdf3;
+      --red: #b42318;
+      --red-bg: #fef3f2;
+      --nav-h: 68px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    .app {
+      position: relative;
+      max-width: 480px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: var(--bg);
+      padding-bottom: calc(var(--nav-h) + 20px + env(safe-area-inset-bottom, 0px));
+    }
+
+    svg.i {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: block;
+    }
+
+    /* ---------- En-tête ---------- */
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, .96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    .top::before {
+      content: "";
+      display: block;
+      height: 4px;
+      background: var(--navy);
+    }
+
+    .top-inner {
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo {
+      height: 46px;
+      width: auto;
+      max-width: 60%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* ---------- Contenu ---------- */
+    .content {
+      padding: 18px 16px 8px;
+    }
+
+    .welcome {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .welcome small {
+      display: block;
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 500;
+    }
+
+    .welcome h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.3px;
+      margin-top: 2px;
+      color: var(--ink);
+      word-break: break-all;
+    }
+
+    .badge {
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #eef1f6;
+      color: var(--muted);
+    }
+
+    .badge::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .badge.active { background: var(--green-bg); color: var(--green); }
+    .badge.blocked { background: var(--red-bg); color: var(--red); }
+
+    /* ---------- Carte solde ---------- */
+    .balance-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      padding: 22px 22px 18px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 60%, var(--navy-deep) 100%);
+      box-shadow: 0 16px 34px rgba(11, 26, 140, .28);
+      margin-bottom: 16px;
+    }
+
+    .balance-card::before,
+    .balance-card::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .balance-card::before {
+      width: 220px;
+      height: 220px;
+      right: -70px;
+      top: -90px;
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .balance-card::after {
+      width: 150px;
+      height: 150px;
+      right: 40px;
+      bottom: -90px;
+      background: rgba(255, 255, 255, .05);
+    }
+
+    .balance-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .balance-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .balance-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .78);
+    }
+
+    .eye-btn {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .12);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .eye-btn .i {
+      width: 18px;
+      height: 18px;
+    }
+
+    .balance {
+      margin-top: 8px;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .balance-value {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.1;
+    }
+
+    .currency {
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, .75);
+    }
+
+    .earned {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, .16);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .earned-label {
+      font-size: 12.5px;
+      color: rgba(255, 255, 255, .72);
+    }
+
+    .earned-value {
+      font-size: 15px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ---------- Actions rapides ---------- */
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 4px 12px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      text-decoration: none;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, .03);
+      transition: transform .12s, border-color .15s;
+    }
+
+    .action:active {
+      transform: scale(.96);
+    }
+
+    .action-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ---------- Carte parrainage ---------- */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, .03);
+    }
+
+    .invite-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .invite-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+    }
+
+    .invite-title {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .invite-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    .invite-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .code-box {
+      flex: 1;
+      min-width: 0;
+      background: var(--bg);
+      border: 1.5px dashed #c7cfe6;
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .code-box small {
+      font-size: 10.5px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .code-value {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: var(--navy);
+      text-transform: uppercase;
+    }
+
+    .copy-btn {
+      flex: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 0 14px;
+      background: var(--navy);
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      transition: transform .12s, opacity .2s;
+    }
+
+    .copy-btn:active { transform: scale(.97); }
+    .copy-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .copy-btn .i { width: 17px; height: 17px; }
+
+    /* ---------- Activité ---------- */
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 2px 10px;
+    }
+
+    .section-title h2 {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -.2px;
+    }
+
+    .transactions {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, .03);
+    }
+
+    .transaction {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-bottom: 1px solid #f0f2f8;
+    }
+
+    .transaction:last-child { border-bottom: 0; }
+
+    .tx-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+    }
+
+    .tx-icon .i { width: 19px; height: 19px; }
+
+    .tx-main { flex: 1; min-width: 0; }
+
+    .tx-label {
+      font-size: 13.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tx-date {
+      font-size: 11px;
+      color: var(--faint);
+      margin-top: 3px;
+    }
+
+    .tx-amount {
+      font-size: 13.5px;
+      font-weight: 800;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .credit { color: var(--green); }
+    .debit { color: var(--red); }
+
+    .empty {
+      padding: 34px 16px;
+      text-align: center;
+      color: var(--faint);
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .empty .i {
+      width: 34px;
+      height: 34px;
+      stroke-width: 1.5;
+      color: #c3cadb;
+    }
+
+    /* ---------- Chargement (squelettes) ---------- */
+    .skeleton {
+      display: block;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #eceff7 25%, #f6f8fc 50%, #eceff7 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.3s infinite linear;
+    }
+
+    @keyframes shimmer {
+      to { background-position: -200% 0; }
+    }
+
+    .skel-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-bottom: 1px solid #f0f2f8;
+    }
+
+    .skel-row:last-child { border-bottom: 0; }
+
+    /* ---------- Erreur ---------- */
+    .error-box {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--red-bg);
+      color: var(--red);
+      border: 1px solid #fecdca;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .error-box.show { display: flex; }
+
+    .error-box button {
+      flex: none;
+      border: 0;
+      background: var(--red);
+      color: #fff;
+      border-radius: 9px;
+      padding: 7px 12px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* ---------- Toast ---------- */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(var(--nav-h) + 22px + env(safe-area-inset-bottom, 0px));
+      transform: translate(-50%, 12px);
+      background: var(--ink);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+      z-index: 80;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    /* ---------- Navigation ---------- */
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0;
+      width: 100%;
+      max-width: 480px;
+      height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: rgba(255, 255, 255, .97);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid var(--line);
+      display: flex;
+      z-index: 50;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-decoration: none;
+      color: var(--faint);
+      font-size: 11px;
+      font-weight: 700;
+      position: relative;
+    }
+
+    .nav-item .i { width: 22px; height: 22px; }
+
+    .nav-item.active { color: var(--navy); }
+
+    .nav-item.active::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      width: 28px;
+      height: 3px;
+      border-radius: 0 0 4px 4px;
+      background: var(--navy);
+    }
+
+    @media (min-width: 481px) {
+      body { background: #e9edf8; }
+      .app { box-shadow: 0 0 50px rgba(11, 26, 140, .10); }
+    }
+
+    @media (max-width: 360px) {
+      .balance-value { font-size: 31px; }
+      .action { font-size: 11px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="top">
+    <div class="top-inner">
+      <img
+        class="logo"
+        src="https://uzgvaqewovipxorucjut.supabase.co/functions/v1/platform-logo"
+        alt="HBD"
+      >
+    </div>
+  </header>
+
+  <main class="content">
+
+    <div id="errorBox" class="error-box" role="alert">
+      <span id="errorText"></span>
+      <button type="button" id="retryBtn">Réessayer</button>
+    </div>
+
+    <section class="welcome">
+      <div>
+        <small>Bienvenue sur HBD</small>
+        <h1 id="welcomeName">Mon espace</h1>
+      </div>
+      <span id="accountStatus" class="badge">—</span>
+    </section>
+
+    <section class="balance-card">
+
+      <div class="balance-head">
+        <span class="balance-label">Solde disponible</span>
+        <button type="button" class="eye-btn" id="eyeBtn" aria-label="Masquer le solde"></button>
+      </div>
+
+      <div class="balance">
+        <span class="balance-value" id="balance">0</span>
+        <span class="currency">FCFA</span>
+      </div>
+
+      <div class="earned">
+        <span class="earned-label">Total cumulé</span>
+        <span class="earned-value"><span id="totalEarned">0</span> FCFA</span>
+      </div>
+
+    </section>
+
+    <nav class="actions" aria-label="Actions rapides">
+
+      <a href="recharge.html" class="action">
+        <span class="action-icon">
+          <svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+        </span>
+        Recharge
+      </a>
+
+      <a href="retrait.html" class="action">
+        <span class="action-icon">
+          <svg class="i" viewBox="0 0 24 24"><path d="M12 21V9m0 0l-4 4m4-4l4 4M4 3h16"/></svg>
+        </span>
+        Retrait
+      </a>
+
+      <a href="produits.html" class="action">
+        <span class="action-icon">
+          <svg class="i" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
+        </span>
+        Produits
+      </a>
+
+      <a href="equipe.html" class="action">
+        <span class="action-icon">
+          <svg class="i" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M21 21v-2a4 4 0 0 0-3-3.87M15 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        Équipe
+      </a>
+
+    </nav>
+
+    <section class="card">
+
+      <div class="invite-head">
+        <span class="invite-icon">
+          <svg class="i" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+        </span>
+        <div>
+          <div class="invite-title">Invitez vos proches</div>
+          <div class="invite-sub">Partagez votre lien : le code est rempli automatiquement à l'inscription.</div>
+        </div>
+      </div>
+
+      <div class="invite-row">
+        <div class="code-box">
+          <small>Mon code de parrainage</small>
+          <span class="code-value" id="referralCode">-----</span>
+        </div>
+
+        <button type="button" class="copy-btn" id="copyBtn" disabled>
+          <svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>
+          Copier le lien
+        </button>
+      </div>
+
+    </section>
+
+    <div class="section-title">
+      <h2>Activité récente</h2>
+    </div>
+
+    <section id="transactions" class="transactions" aria-live="polite">
+      <div class="skel-row"><span class="skeleton" style="width:40px;height:40px;border-radius:12px"></span><div style="flex:1"><span class="skeleton" style="width:55%;height:12px"></span><span class="skeleton" style="width:35%;height:9px;margin-top:8px"></span></div><span class="skeleton" style="width:56px;height:13px"></span></div>
+      <div class="skel-row"><span class="skeleton" style="width:40px;height:40px;border-radius:12px"></span><div style="flex:1"><span class="skeleton" style="width:48%;height:12px"></span><span class="skeleton" style="width:30%;height:9px;margin-top:8px"></span></div><span class="skeleton" style="width:56px;height:13px"></span></div>
+      <div class="skel-row"><span class="skeleton" style="width:40px;height:40px;border-radius:12px"></span><div style="flex:1"><span class="skeleton" style="width:60%;height:12px"></span><span class="skeleton" style="width:38%;height:9px;margin-top:8px"></span></div><span class="skeleton" style="width:56px;height:13px"></span></div>
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <nav class="bottom-nav" aria-label="Navigation principale">
+
+    <a href="dashboard.html" class="nav-item active">
+      <svg class="i" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V11z"/></svg>
+      Accueil
+    </a>
+
+    <a href="produits.html" class="nav-item">
+      <svg class="i" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
+      Produits
+    </a>
+
+    <a href="equipe.html" class="nav-item">
+      <svg class="i" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M21 21v-2a4 4 0 0 0-3-3.87M15 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Équipe
+    </a>
+
+    <a href="moi.html" class="nav-item">
+      <svg class="i" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Moi
+    </a>
+
+  </nav>
+
+</div>
+
+<script>
+  const DASHBOARD_URL =
+    "https://uzgvaqewovipxorucjut.supabase.co/functions/v1/dashboard";
+
+  const LOGIN_PAGE = "login.html";
+
+  const sessionToken = sessionStorage.getItem("hbd_session_token");
+  const userId = sessionStorage.getItem("hbd_user_id");
+
+  if (!sessionToken || !userId) {
+    window.location.replace(LOGIN_PAGE);
+  }
+
+  const balanceEl = document.getElementById("balance");
+  const totalEarnedEl = document.getElementById("totalEarned");
+  const referralEl = document.getElementById("referralCode");
+  const statusEl = document.getElementById("accountStatus");
+  const welcomeEl = document.getElementById("welcomeName");
+  const transactionsEl = document.getElementById("transactions");
+  const errorBox = document.getElementById("errorBox");
+  const errorText = document.getElementById("errorText");
+  const retryBtn = document.getElementById("retryBtn");
+  const eyeBtn = document.getElementById("eyeBtn");
+  const copyBtn = document.getElementById("copyBtn");
+  const toastEl = document.getElementById("toast");
+
+  /* ---------------- Icônes ---------------- */
+
+  const ICON = {
+    eye: '<svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+    eyeOff: '<svg class="i" viewBox="0 0 24 24"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>',
+    deposit: '<svg class="i" viewBox="0 0 24 24"><path d="M17 7L7 17M17 17H7V7"/></svg>',
+    withdrawal: '<svg class="i" viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>',
+    income: '<svg class="i" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>',
+    purchase: '<svg class="i" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>',
+    referral: '<svg class="i" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M21 21v-2a4 4 0 0 0-3-3.87M15 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    gift: '<svg class="i" viewBox="0 0 24 24"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>',
+    coin: '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h4a1.5 1.5 0 0 1 0 3h-3a1.5 1.5 0 0 0 0 3h4"/></svg>',
+    empty: '<svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h6"/></svg>'
+  };
+
+  /* ---------------- Utilitaires ---------------- */
+
+  function formatMoney(value) {
+    return new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 })
+      .format(Number(value || 0));
+  }
+
+  function formatDate(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+
+    return date.toLocaleString("fr-FR", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function getTransactionIcon(transaction) {
+    const type = String(transaction.type || transaction.kind || "").toLowerCase();
+
+    if (type.includes("deposit") || type.includes("depot")) return ICON.deposit;
+    if (type.includes("withdrawal") || type.includes("retrait")) return ICON.withdrawal;
+    if (type.includes("income") || type.includes("revenu")) return ICON.income;
+    if (type.includes("purchase") || type.includes("achat")) return ICON.purchase;
+    if (type.includes("referral") || type.includes("parrainage")) return ICON.referral;
+    if (type.includes("gift") || type.includes("cadeau")) return ICON.gift;
+
+    return ICON.coin;
+  }
+
+  let toastTimer = null;
+
+  function toast(text) {
+    toastEl.textContent = text;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2200);
+  }
+
+  /* ---------------- Solde masquable ---------------- */
+
+  const state = { balance: 0, totalEarned: 0, referralCode: "" };
+  let hidden = sessionStorage.getItem("hbd_hide_balance") === "1";
+
+  function renderBalance() {
+    balanceEl.textContent = hidden ? "••••••" : formatMoney(state.balance);
+    totalEarnedEl.textContent = hidden ? "••••" : formatMoney(state.totalEarned);
+
+    eyeBtn.innerHTML = hidden ? ICON.eyeOff : ICON.eye;
+    eyeBtn.setAttribute("aria-label", hidden ? "Afficher le solde" : "Masquer le solde");
+  }
+
+  eyeBtn.addEventListener("click", () => {
+    hidden = !hidden;
+    sessionStorage.setItem("hbd_hide_balance", hidden ? "1" : "0");
+    renderBalance();
+  });
+
+  renderBalance();
+
+  /* ---------------- Lien de parrainage ---------------- */
+
+  function getInviteLink() {
+    if (!state.referralCode) return "";
+    return new URL(
+      "inscription.html?ref=" + encodeURIComponent(state.referralCode),
+      window.location.href
+    ).href;
+  }
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      const area = document.createElement("textarea");
+      area.value = text;
+      area.style.position = "fixed";
+      area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.select();
+
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch { ok = false; }
+
+      area.remove();
+      return ok;
+    }
+  }
+
+  copyBtn.addEventListener("click", async () => {
+    const link = getInviteLink();
+    if (!link) return;
+
+    const ok = await copyText(link);
+    toast(ok ? "Lien d'invitation copié" : "Copie impossible");
+  });
+
+  /* ---------------- Transactions ---------------- */
+
+  function renderTransactions(transactions) {
+    if (!Array.isArray(transactions) || transactions.length === 0) {
+      transactionsEl.innerHTML = `
+        <div class="empty">
+          ${ICON.empty}
+          Aucune activité pour le moment.
+        </div>
+      `;
+      return;
+    }
+
+    transactionsEl.innerHTML = transactions.slice(0, 8).map(tx => {
+      const amount = Number(tx.amount || 0);
+      const isCredit = amount >= 0;
+      const sign = isCredit ? "+" : "";
+
+      return `
+        <div class="transaction">
+          <div class="tx-icon">${getTransactionIcon(tx)}</div>
+
+          <div class="tx-main">
+            <div class="tx-label">${escapeHtml(tx.label || tx.description || tx.type || "Transaction")}</div>
+            <div class="tx-date">${formatDate(tx.created_at)}</div>
+          </div>
+
+          <div class="tx-amount ${isCredit ? "credit" : "debit"}">
+            ${sign}${formatMoney(amount)} FCFA
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  /* ---------------- Statut ---------------- */
+
+  function renderStatus(rawStatus) {
+    const status = String(rawStatus || "").toLowerCase();
+
+    statusEl.className = "badge";
+
+    if (status === "active") {
+      statusEl.textContent = "Actif";
+      statusEl.classList.add("active");
+    } else if (status === "blocked") {
+      statusEl.textContent = "Bloqué";
+      statusEl.classList.add("blocked");
+    } else {
+      statusEl.textContent = rawStatus || "—";
+    }
+  }
+
+  /* ---------------- Chargement ---------------- */
+
+  function showError(text) {
+    errorText.textContent = text;
+    errorBox.classList.add("show");
+  }
+
+  async function loadDashboard() {
+    errorBox.classList.remove("show");
+
+    try {
+      const response = await fetch(DASHBOARD_URL, {
+        method: "GET",
+        headers: { "x-session-token": sessionToken }
+      });
+
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
+
+      if (response.status === 401) {
+        sessionStorage.removeItem("hbd_session_token");
+        sessionStorage.removeItem("hbd_user_id");
+        window.location.replace(LOGIN_PAGE);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || "Impossible de charger le tableau de bord.");
+      }
+
+      const profile = data.profile || {};
+
+      state.balance = Number(profile.balance || 0);
+      state.totalEarned = Number(profile.total_earned || 0);
+      state.referralCode = profile.referral_code || "";
+
+      renderBalance();
+
+      referralEl.textContent = state.referralCode || "-----";
+      copyBtn.disabled = !state.referralCode;
+
+      renderStatus(profile.status);
+
+      if (profile.phone) {
+        welcomeEl.textContent = "Bonjour, " + profile.phone;
+      }
+
+      renderTransactions(data.transactions || []);
+
+    } catch (error) {
+      showError(error.message || "Une erreur est survenue.");
+
+      transactionsEl.innerHTML = `
+        <div class="empty">
+          ${ICON.empty}
+          Impossible de charger les activités.
+        </div>
+      `;
+    }
+  }
+
+  retryBtn.addEventListener("click", loadDashboard);
+
+  if (sessionToken && userId) {
+    loadDashboard();
+  }
+</script>
+
+</body>
+</html>
