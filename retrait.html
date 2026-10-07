@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Retrait - HBD</title>
+
+  <style>
+    :root {
+      --navy: #0b1a8c;
+      --navy-dark: #081268;
+      --navy-deep: #050c4a;
+      --navy-soft: rgba(11, 26, 140, .08);
+      --navy-tint: #eef1fb;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --faint: #94a3b8;
+      --line: #dbe1ee;
+      --card-line: #e6eaf3;
+      --field: #f6f8fd;
+      --bg: #f3f5fb;
+      --white: #ffffff;
+      --green: #067647;
+      --green-bg: #ecfdf3;
+      --red: #b42318;
+      --red-bg: #fef3f2;
+      --amber: #b54708;
+      --amber-bg: #fffaeb;
+      --blue: #175cd3;
+      --blue-bg: #eff8ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    button, input { font-family: inherit; }
+
+    .app {
+      position: relative;
+      max-width: 480px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: var(--bg);
+      padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+    }
+
+    svg.i {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: block;
+    }
+
+    /* ---------- En-tête ---------- */
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, .96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--card-line);
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    .top::before {
+      content: "";
+      display: block;
+      height: 4px;
+      background: var(--navy);
+    }
+
+    .top-inner {
+      position: relative;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back {
+      position: absolute;
+      left: 14px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .back:active { transform: scale(.94); }
+
+    .logo {
+      height: 46px;
+      width: auto;
+      max-width: 55%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .content { padding: 18px 16px 0; }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.3px;
+      margin-bottom: 14px;
+    }
+
+    /* ---------- Solde ---------- */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      padding: 20px 20px 18px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 60%, var(--navy-deep) 100%);
+      box-shadow: 0 16px 34px rgba(11, 26, 140, .28);
+      margin-bottom: 14px;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 220px;
+      height: 220px;
+      right: -75px;
+      top: -95px;
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .hero::after {
+      width: 140px;
+      height: 140px;
+      left: -50px;
+      bottom: -85px;
+      background: rgba(255, 255, 255, .05);
+    }
+
+    .hero > * { position: relative; z-index: 1; }
+
+    .hero-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hero-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .78);
+    }
+
+    .eye-btn {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .12);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .eye-btn .i { width: 18px; height: 18px; }
+
+    .hero-balance {
+      margin-top: 6px;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hero-value {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.1;
+    }
+
+    .hero-unit {
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, .75);
+    }
+
+    .hero-foot {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, .16);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .hero-foot small {
+      display: block;
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, .7);
+    }
+
+    .hero-foot strong {
+      display: block;
+      margin-top: 3px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .hero-foot div:last-child { text-align: right; }
+
+    /* ---------- Cartes ---------- */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--card-line);
+      border-radius: 20px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, .04);
+    }
+
+    .card-head { margin-bottom: 14px; }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .card-subtitle {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ---------- Compte de réception ---------- */
+    .dest {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--navy-tint);
+      margin-bottom: 16px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .dest.warn {
+      background: var(--amber-bg);
+    }
+
+    .dest-icon {
+      width: 38px;
+      height: 38px;
+      flex: none;
+      border-radius: 11px;
+      background: var(--white);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dest.warn .dest-icon { color: var(--amber); }
+    .dest-icon .i { width: 19px; height: 19px; }
+
+    .dest-text { flex: 1; min-width: 0; }
+
+    .dest-text small {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .dest-text strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 13.5px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dest.warn .dest-text strong { color: var(--amber); }
+
+    .dest-link {
+      flex: none;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .dest.warn .dest-link { color: var(--amber); }
+
+    /* ---------- Formulaire ---------- */
+    .field { margin-bottom: 14px; }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 6px;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input {
+      width: 100%;
+      height: 50px;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      background: var(--field);
+      color: var(--ink);
+      padding: 0 14px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s, background .15s;
+    }
+
+    .input::placeholder { color: #9aa5b8; }
+
+    .input:focus {
+      border-color: var(--navy);
+      background: var(--white);
+      box-shadow: 0 0 0 3.5px var(--navy-soft);
+    }
+
+    .input.bad { border-color: #f04438; }
+
+    .amount-input {
+      height: 58px;
+      padding-right: 72px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .amount-input::placeholder {
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .suffix {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .help {
+      margin-top: 6px;
+      font-size: 11.5px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .help.bad { color: var(--red); font-weight: 600; }
+
+    .quick {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .quick button {
+      border: 1.5px solid var(--line);
+      background: var(--white);
+      color: var(--navy);
+      border-radius: 999px;
+      padding: 7px 13px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .quick button:active { background: var(--navy-tint); }
+
+    .password-wrap { position: relative; }
+    .password-wrap .input { padding-right: 50px; }
+
+    .eye {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 48px;
+      height: 50px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .eye .i { width: 20px; height: 20px; }
+
+    /* ---------- Calcul ---------- */
+    .calc {
+      background: var(--bg);
+      border-radius: 14px;
+      padding: 4px 14px;
+      margin-bottom: 16px;
+    }
+
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #e4e8f3;
+      font-size: 13px;
+    }
+
+    .calc-row:last-child { border-bottom: 0; }
+
+    .calc-row span:first-child { color: var(--muted); }
+
+    .calc-row span:last-child {
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .calc-row.fee span:last-child { color: var(--red); }
+
+    .calc-row.total span:first-child {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .calc-row.total span:last-child {
+      color: var(--green);
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    /* ---------- Boutons ---------- */
+    .submit {
+      width: 100%;
+      height: 54px;
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(11, 26, 140, .28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      transition: transform .12s, opacity .2s;
+    }
+
+    .submit:active { transform: scale(.98); }
+    .submit:disabled { opacity: .7; cursor: not-allowed; }
+
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid rgba(255, 255, 255, .35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    .submit.loading .spinner { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---------- Conditions ---------- */
+    .rule {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f2f8;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .rule:first-of-type { padding-top: 0; }
+    .rule:last-child { border-bottom: 0; padding-bottom: 0; }
+
+    .rule strong { color: var(--ink); }
+
+    .rule-icon {
+      width: 28px;
+      height: 28px;
+      flex: none;
+      border-radius: 9px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rule-icon .i { width: 15px; height: 15px; }
+
+    /* ---------- Historique ---------- */
+    .withdrawal {
+      border: 1px solid var(--card-line);
+      border-radius: 16px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .withdrawal:last-child { margin-bottom: 0; }
+
+    .withdrawal-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px;
+    }
+
+    .withdrawal:active .withdrawal-main { background: var(--bg); }
+
+    .w-icon {
+      width: 40px;
+      height: 40px;
+      flex: none;
+      border-radius: 12px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .w-icon .i { width: 19px; height: 19px; }
+
+    .w-info { flex: 1; min-width: 0; }
+
+    .w-ref {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .w-date {
+      margin-top: 3px;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .w-amount { text-align: right; flex: none; }
+
+    .w-requested {
+      font-size: 14px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .w-payout {
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 800;
+    }
+
+    .pill.pending { background: var(--amber-bg); color: var(--amber); }
+    .pill.processing { background: var(--blue-bg); color: var(--blue); }
+    .pill.paid { background: var(--green-bg); color: var(--green); }
+    .pill.rejected { background: var(--red-bg); color: var(--red); }
+    .pill.other { background: #eef1f6; color: var(--muted); }
+
+    .w-details {
+      display: none;
+      padding: 0 13px 13px;
+    }
+
+    .withdrawal.open .w-details { display: block; }
+
+    .details {
+      background: var(--bg);
+      border-radius: 13px;
+      padding: 3px 13px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 9px 0;
+      border-bottom: 1px solid #e4e8f3;
+      font-size: 12.5px;
+    }
+
+    .detail-row:last-child { border-bottom: 0; }
+
+    .detail-row span:first-child { color: var(--muted); flex: none; }
+
+    .detail-row span:last-child {
+      font-weight: 700;
+      text-align: right;
+      word-break: break-word;
+      min-width: 0;
+    }
+
+    .ref-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .copy-ref {
+      flex: none;
+      width: 28px;
+      height: 28px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .copy-ref .i { width: 14px; height: 14px; }
+
+    .reject-note {
+      margin-top: 8px;
+      padding: 11px 13px;
+      border-radius: 12px;
+      background: var(--red-bg);
+      color: var(--red);
+      font-size: 12.5px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .timeline { margin-top: 14px; }
+
+    .timeline-title {
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .timeline-item {
+      position: relative;
+      display: flex;
+      gap: 11px;
+      padding-bottom: 13px;
+    }
+
+    .timeline-item:last-child { padding-bottom: 0; }
+
+    .timeline-item:not(:last-child)::before {
+      content: "";
+      position: absolute;
+      left: 4.5px;
+      top: 14px;
+      bottom: 0;
+      width: 1.5px;
+      background: #d5dbea;
+    }
+
+    .timeline-dot {
+      width: 10px;
+      height: 10px;
+      flex: none;
+      margin-top: 4px;
+      border-radius: 50%;
+      background: var(--navy);
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-status { font-size: 12.5px; font-weight: 700; }
+
+    .timeline-message {
+      margin-top: 2px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .timeline-date {
+      margin-top: 3px;
+      font-size: 11px;
+      color: var(--faint);
+    }
+
+    /* ---------- États ---------- */
+    .skeleton {
+      display: block;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #eceff7 25%, #f6f8fc 50%, #eceff7 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.3s infinite linear;
+    }
+
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    .skel-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px;
+      border: 1px solid var(--card-line);
+      border-radius: 16px;
+      margin-bottom: 10px;
+    }
+
+    .empty {
+      border: 1.5px dashed #cfd6ea;
+      border-radius: 16px;
+      padding: 30px 16px;
+      text-align: center;
+    }
+
+    .empty-icon {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 12px;
+      border-radius: 16px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .empty-icon .i { width: 24px; height: 24px; }
+
+    .empty-title { font-size: 14px; font-weight: 800; }
+
+    .empty-text {
+      margin-top: 5px;
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ---------- Message flottant ---------- */
+    .message {
+      position: fixed;
+      left: 50%;
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      width: calc(100% - 32px);
+      max-width: 448px;
+      transform: translate(-50%, -12px);
+      z-index: 200;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .16);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+    }
+
+    .message.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .message.error {
+      background: #fff0ef;
+      color: var(--red);
+      border: 1px solid #ffc9c5;
+    }
+
+    .message.success {
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid #abefc6;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+      transform: translate(-50%, 12px);
+      background: var(--ink);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+      z-index: 220;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    /* ---------- Confirmation ---------- */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(8, 18, 104, .45);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sheet {
+      width: 100%;
+      max-width: 480px;
+      background: var(--white);
+      border-radius: 24px 24px 0 0;
+      padding: 10px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+      transform: translateY(30px);
+      transition: transform .22s;
+    }
+
+    .overlay.show .sheet { transform: translateY(0); }
+
+    .grabber {
+      width: 40px;
+      height: 4px;
+      border-radius: 4px;
+      background: #d5dbea;
+      margin: 0 auto 16px;
+    }
+
+    .sheet h3 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .sheet > p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+
+    .recap {
+      background: var(--bg);
+      border-radius: 14px;
+      padding: 4px 14px;
+      margin-bottom: 16px;
+    }
+
+    .recap-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #e4e8f3;
+      font-size: 13px;
+    }
+
+    .recap-row:last-child { border-bottom: 0; }
+    .recap-row span:first-child { color: var(--muted); }
+    .recap-row span:last-child { font-weight: 800; text-align: right; }
+    .recap-row.total span:last-child { color: var(--green); font-size: 16px; }
+
+    .sheet-actions {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 10px;
+    }
+
+    .btn-cancel,
+    .btn-confirm {
+      border: 0;
+      border-radius: 13px;
+      padding: 14px;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-cancel { background: #eef1f6; color: var(--ink); }
+
+    .btn-confirm {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(11, 26, 140, .26);
+    }
+
+    .btn-confirm:disabled,
+    .btn-cancel:disabled { opacity: .65; cursor: not-allowed; }
+
+    .btn-confirm.loading .spinner { display: block; }
+
+    [hidden] { display: none !important; }
+
+    @media (min-width: 481px) {
+      body { background: #e9edf8; }
+      .app { box-shadow: 0 0 50px rgba(11, 26, 140, .10); }
+    }
+
+    @media (max-width: 360px) {
+      .hero-value { font-size: 29px; }
+      .amount-input { font-size: 21px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation-duration: 1.5s !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div id="message" class="message" role="alert" aria-live="assertive"></div>
+  <div id="toast" class="toast" role="status"></div>
+
+  <header class="top">
+    <div class="top-inner">
+      <a href="moi.html" class="back" aria-label="Retour">
+        <svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+      </a>
+
+      <img
+        id="logo"
+        class="logo"
+        src="https://uzgvaqewovipxorucjut.supabase.co/functions/v1/platform-logo"
+        alt="HBD"
+      >
+    </div>
+  </header>
+
+  <main class="content">
+
+    <h1 class="page-title">Retrait</h1>
+
+    <!-- SOLDE -->
+    <section class="hero">
+
+      <div class="hero-head">
+        <span class="hero-label">Solde disponible</span>
+        <button type="button" class="eye-btn" id="eyeBtn" aria-label="Masquer le solde"></button>
+      </div>
+
+      <div class="hero-balance">
+        <span class="hero-value" id="balance">—</span>
+        <span class="hero-unit">FCFA</span>
+      </div>
+
+      <div class="hero-foot">
+        <div>
+          <small>Minimum</small>
+          <strong>1 700 FCFA</strong>
+        </div>
+        <div>
+          <small>Frais</small>
+          <strong>20 %</strong>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- NOUVEAU RETRAIT -->
+    <section class="card">
+
+      <div class="card-head">
+        <div class="card-title">Nouveau retrait</div>
+        <div class="card-subtitle">Entrez le montant que vous souhaitez retirer</div>
+      </div>
+
+      <div id="dest" class="dest" hidden></div>
+
+      <form id="withdrawalForm" novalidate>
+
+        <div class="field">
+          <label for="amount">Montant du retrait</label>
+
+          <div class="input-wrap">
+            <input
+              id="amount"
+              class="input amount-input"
+              type="text"
+              inputmode="numeric"
+              placeholder="0"
+              autocomplete="off"
+            >
+            <span class="suffix">FCFA</span>
+          </div>
+
+          <div id="amountHelp" class="help">Minimum autorisé : 1 700 FCFA.</div>
+
+          <div id="quick" class="quick" hidden></div>
+        </div>
+
+        <div class="calc" aria-live="polite">
+          <div class="calc-row">
+            <span>Montant demandé</span>
+            <span id="calcRequested">0 FCFA</span>
+          </div>
+
+          <div class="calc-row fee">
+            <span>Frais de retrait (20 %)</span>
+            <span id="calcFee">0 FCFA</span>
+          </div>
+
+          <div class="calc-row total">
+            <span>Vous recevrez</span>
+            <span id="calcPayout">0 FCFA</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="transactionPassword">Mot de passe de transaction</label>
+
+          <div class="password-wrap">
+            <input
+              id="transactionPassword"
+              class="input"
+              type="password"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="Votre mot de passe de transaction"
+            >
+            <button type="button" class="eye" id="pwdEye" aria-label="Afficher le mot de passe"></button>
+          </div>
+
+          <div class="help">Il est différent de votre mot de passe de connexion.</div>
+        </div>
+
+        <button id="submitButton" class="submit" type="submit">
+          <span id="submitText">Continuer</span>
+        </button>
+
+      </form>
+
+    </section>
+
+    <!-- CONDITIONS -->
+    <section class="card">
+
+      <div class="card-head">
+        <div class="card-title">Conditions de retrait</div>
+        <div class="card-subtitle">Règles appliquées automatiquement par le serveur</div>
+      </div>
+
+      <div class="rule">
+        <span class="rule-icon"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+        <div>Le montant minimum est de <strong>1 700 FCFA</strong>.</div>
+      </div>
+
+      <div class="rule">
+        <span class="rule-icon"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h4a1.5 1.5 0 0 1 0 3h-3a1.5 1.5 0 0 0 0 3h4"/></svg></span>
+        <div>Des frais de <strong>20 %</strong> sont automatiquement déduits.</div>
+      </div>
+
+      <div class="rule">
+        <span class="rule-icon"><svg class="i" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
+        <div>Un <strong>compte de retrait</strong> doit être enregistré avant la demande.</div>
+      </div>
+
+      <div class="rule">
+        <span class="rule-icon"><svg class="i" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span>
+        <div>Un <strong>achat de produit</strong> est nécessaire avant le premier retrait.</div>
+      </div>
+
+      <div class="rule">
+        <span class="rule-icon"><svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
+        <div>Toutes les vérifications sont effectuées par le serveur.</div>
+      </div>
+
+    </section>
+
+    <!-- HISTORIQUE -->
+    <section class="card" id="historyCard">
+
+      <div class="card-head">
+        <div class="card-title">Mes retraits</div>
+        <div class="card-subtitle">Suivi de vos demandes</div>
+      </div>
+
+      <div id="history">
+        <div class="skel-row"><span class="skeleton" style="width:40px;height:40px;border-radius:12px"></span><div style="flex:1"><span class="skeleton" style="width:55%;height:12px"></span><span class="skeleton" style="width:35%;height:9px;margin-top:8px"></span></div><span class="skeleton" style="width:64px;height:13px"></span></div>
+        <div class="skel-row"><span class="skeleton" style="width:40px;height:40px;border-radius:12px"></span><div style="flex:1"><span class="skeleton" style="width:48%;height:12px"></span><span class="skeleton" style="width:30%;height:9px;margin-top:8px"></span></div><span class="skeleton" style="width:64px;height:13px"></span></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- CONFIRMATION -->
+  <div id="confirmOverlay" class="overlay" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <div class="grabber"></div>
+
+      <h3 id="confirmTitle">Confirmer le retrait</h3>
+      <p>Vérifiez les informations avant de valider.</p>
+
+      <div class="recap">
+        <div class="recap-row"><span>Montant demandé</span><span id="rcRequested">—</span></div>
+        <div class="recap-row"><span>Frais (20 %)</span><span id="rcFee">—</span></div>
+        <div class="recap-row total"><span>Vous recevrez</span><span id="rcPayout">—</span></div>
+        <div class="recap-row" id="rcDestRow" hidden><span>Compte</span><span id="rcDest">—</span></div>
+      </div>
+
+      <div class="sheet-actions">
+        <button type="button" class="btn-cancel" id="cancelBtn">Annuler</button>
+        <button type="button" class="btn-confirm" id="confirmBtn">
+          <span class="spinner"></span>
+          <span id="confirmText">Confirmer</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  "use strict";
+
+  const FUNCTIONS = "https://uzgvaqewovipxorucjut.supabase.co/functions/v1";
+  const WITHDRAWAL_URL = FUNCTIONS + "/p-home-withdrawal";
+  const ACCOUNT_URL = FUNCTIONS + "/p-home-withdrawal-account";
+  const DASHBOARD_URL = FUNCTIONS + "/dashboard";
+  const LOGIN_PAGE = "login.html";
+
+  const MIN_AMOUNT = 1700;
+  const FEE_RATE = 0.20;
+
+  const sessionToken = sessionStorage.getItem("hbd_session_token");
+
+  const $ = (id) => document.getElementById(id);
+
+  let currentBalance = null;
+  let hidden = sessionStorage.getItem("hbd_hide_balance") === "1";
+  let destLabel = "";
+  let busy = false;
+  let messageTimer = null;
+  let toastTimer = null;
+
+  /* ---------------- Icônes ---------------- */
+
+  const ICON = {
+    eye: '<svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+    eyeOff: '<svg class="i" viewBox="0 0 24 24"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>',
+    up: '<svg class="i" viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>',
+    copy: '<svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>',
+    card: '<svg class="i" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>',
+    alert: '<svg class="i" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>'
+  };
+
+  /* ---------------- Formatage ---------------- */
+
+  const moneyFormatter = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
+
+  function money(value) {
+    return moneyFormatter.format(Math.abs(Number(value || 0)));
+  }
+
+  function formatDate(value) {
+    if (!value) return "—";
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return "—";
+
+    return d.toLocaleString("fr-FR", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function groupPhone(phone) {
+    const digits = String(phone || "").replace(/\D/g, "");
+    return digits.replace(/(\d{2})(?=\d)/g, "$1 ").trim();
+  }
+
+  /* ---------------- Messages ---------------- */
+
+  function showMessage(text, type) {
+    const box = $("message");
+
+    box.className = "message " + type + " show";
+    box.textContent = text;
+
+    clearTimeout(messageTimer);
+    messageTimer = setTimeout(() => box.classList.remove("show"), 5000);
+  }
+
+  function showError(text) {
+    showMessage(text || "Une erreur est survenue.", "error");
+  }
+
+  function showSuccess(text) {
+    showMessage(text || "Opération réussie.", "success");
+  }
+
+  function toast(text) {
+    const el = $("toast");
+    el.textContent = text;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("show"), 1800);
+  }
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast("Référence copiée");
+    } catch {
+      const area = document.createElement("textarea");
+      area.value = text;
+      area.style.position = "fixed";
+      area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.select();
+
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch { ok = false; }
+
+      area.remove();
+      toast(ok ? "Référence copiée" : "Copie impossible");
+    }
+  }
+
+  /* ---------------- Requêtes serveur ---------------- */
+
+  async function fetchJson(url, options = {}) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          "Accept": "application/json",
+          "x-session-token": sessionToken,
+          ...(options.headers || {})
+        },
+        cache: "no-store",
+        signal: controller.signal
+      });
+
+      const raw = await response.text();
+      let data = {};
+
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch {
+        throw new Error("Réponse serveur invalide.");
+      }
+
+      if (response.status === 401) {
+        sessionStorage.removeItem("hbd_session_token");
+        sessionStorage.removeItem("hbd_user_id");
+        window.location.replace(LOGIN_PAGE);
+        return null;
+      }
+
+      if (!response.ok) {
+        const error = new Error(data.error || data.message || "Erreur serveur.");
+        error.status = response.status;
+        throw error;
+      }
+
+      return data;
+
+    } catch (error) {
+      if (error.name === "AbortError") {
+        throw new Error("Le serveur met trop de temps à répondre.");
+      }
+
+      throw error;
+
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  /* ---------------- Solde ---------------- */
+
+  function renderBalance() {
+    $("balance").textContent =
+      currentBalance === null ? "—" : hidden ? "••••••" : money(currentBalance);
+
+    $("eyeBtn").innerHTML = hidden ? ICON.eyeOff : ICON.eye;
+    $("eyeBtn").setAttribute("aria-label", hidden ? "Afficher le solde" : "Masquer le solde");
+  }
+
+  $("eyeBtn").addEventListener("click", () => {
+    hidden = !hidden;
+    sessionStorage.setItem("hbd_hide_balance", hidden ? "1" : "0");
+    renderBalance();
+  });
+
+  function renderQuickAmounts() {
+    const box = $("quick");
+
+    if (currentBalance === null || currentBalance < MIN_AMOUNT) {
+      box.hidden = true;
+      return;
+    }
+
+    const presets = [5000, 10000, 25000, 50000].filter(v => v <= currentBalance);
+
+    const buttons = presets.map(v =>
+      `<button type="button" data-amount="${v}">${money(v)}</button>`
+    );
+
+    buttons.push(`<button type="button" data-amount="${Math.floor(currentBalance)}">Tout retirer</button>`);
+
+    box.innerHTML = buttons.join("");
+    box.hidden = false;
+  }
+
+  $("quick").addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-amount]");
+    if (!button) return;
+
+    $("amount").value = money(button.dataset.amount);
+    updateCalculation();
+  });
+
+  async function loadBalance() {
+    try {
+      const data = await fetchJson(DASHBOARD_URL, { method: "GET" });
+      if (!data) return;
+
+      const profile = data.profile || data.user || {};
+
+      const balance =
+        profile.balance ?? data.balance ?? profile.solde ?? data.solde ?? 0;
+
+      currentBalance = Number(balance) || 0;
+
+      renderBalance();
+      renderQuickAmounts();
+
+    } catch (error) {
+      console.error("Solde:", error);
+
+      currentBalance = null;
+      renderBalance();
+
+      showError("Impossible de récupérer votre solde. " + (error.message || ""));
+    }
+  }
+
+  /* ---------------- Compte de réception ---------------- */
+
+  function renderDestination(account) {
+    const box = $("dest");
+
+    if (account) {
+      const phone = groupPhone(account.beneficiary_phone || account.phone);
+      const operator = account.operator || "Mobile Money";
+      const name = account.beneficiary_name || account.name || "";
+
+      destLabel = operator + (phone ? " · " + phone : "");
+
+      box.className = "dest";
+      box.innerHTML = `
+        <span class="dest-icon">${ICON.card}</span>
+        <span class="dest-text">
+          <small>Compte de réception</small>
+          <strong>${escapeHtml(destLabel)}${name ? " · " + escapeHtml(name) : ""}</strong>
+        </span>
+      `;
+
+      box.removeAttribute("href");
+      box.hidden = false;
+      return;
+    }
+
+    destLabel = "";
+
+    box.className = "dest warn";
+    box.innerHTML = `
+      <span class="dest-icon">${ICON.alert}</span>
+      <span class="dest-text">
+        <small>Compte de réception</small>
+        <strong>Aucun compte enregistré</strong>
+      </span>
+      <span class="dest-link">Ajouter</span>
+    `;
+
+    box.setAttribute("href", "compte-retrait.html");
+    box.hidden = false;
+  }
+
+  async function loadDestination() {
+    const box = $("dest");
+
+    try {
+      const data = await fetchJson(ACCOUNT_URL, { method: "GET" });
+      if (!data) return;
+
+      const account = data.account || data.withdrawal_account || data.data || data;
+
+      if (account && typeof account === "object" &&
+          (account.beneficiary_phone || account.phone)) {
+        renderDestination(account);
+      } else {
+        renderDestination(null);
+      }
+
+    } catch (error) {
+      /* Fonction absente ou erreur : on n'affiche rien (le serveur vérifie de toute façon) */
+      if (error.status === 404) {
+        renderDestination(null);
+      } else {
+        box.hidden = true;
+      }
+    }
+
+    box.tagName === "DIV" && box.hidden === false && box.getAttribute("href") &&
+      box.replaceWith(Object.assign(document.createElement("a"), {
+        id: "dest",
+        className: box.className,
+        innerHTML: box.innerHTML,
+        href: "compte-retrait.html"
+      }));
+  }
+
+  /* ---------------- Historique ---------------- */
+
+  const STATUS = {
+    pending: { label: "En attente", cls: "pending" },
+    processing: { label: "En traitement", cls: "processing" },
+    paid: { label: "Payé", cls: "paid" },
+    rejected: { label: "Rejeté", cls: "rejected" }
+  };
+
+  function statusInfo(status) {
+    const key = String(status || "").toLowerCase();
+    return STATUS[key] || { label: status || "Inconnu", cls: "other" };
+  }
+
+  function renderTimeline(history) {
+    if (!Array.isArray(history) || !history.length) return "";
+
+    return `
+      <div class="timeline">
+        <div class="timeline-title">Suivi de la demande</div>
+
+        ${history.map(item => `
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div>
+              <div class="timeline-status">${escapeHtml(statusInfo(item.status).label)}</div>
+              ${item.message ? `<div class="timeline-message">${escapeHtml(item.message)}</div>` : ""}
+              <div class="timeline-date">${escapeHtml(formatDate(item.created_at))}</div>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  function renderHistory(withdrawals) {
+    const container = $("history");
+
+    if (!Array.isArray(withdrawals) || !withdrawals.length) {
+      container.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">${ICON.up}</div>
+          <div class="empty-title">Aucun retrait</div>
+          <div class="empty-text">Vos demandes de retrait apparaîtront ici.</div>
+        </div>
+      `;
+      return;
+    }
+
+    const sorted = [...withdrawals].sort((a, b) => {
+      const da = new Date(a.created_at).getTime() || 0;
+      const db = new Date(b.created_at).getTime() || 0;
+      return db - da;
+    });
+
+    container.innerHTML = sorted.map(w => {
+      const status = statusInfo(w.status);
+      const requested = Number(w.requested_amount || 0);
+      const fee = Number(w.fee_amount || 0);
+      const payout = Number(w.payout_amount || 0);
+      const reference = w.reference_code || "";
+
+      const refRow = reference
+        ? `
+     <div class="detail-row">
+            <span>Référence</span>
+            <span class="ref-line">
+              <span>${escapeHtml(reference)}</span>
+              <button type="button" class="copy-ref" data-copy="${escapeHtml(reference)}" aria-label="Copier la référence">${ICON.copy}</button>
+            </span>
+          </div>`
+        : "";
+
+      return `
+        <article class="withdrawal">
+
+          <div class="withdrawal-main">
+
+            <div class="w-icon">${ICON.up}</div>
+
+            <div class="w-info">
+              <div class="w-ref">${escapeHtml(reference || "Retrait")}</div>
+              <div class="w-date">${escapeHtml(formatDate(w.created_at))}</div>
+            </div>
+
+            <div class="w-amount">
+              <div class="w-requested">${money(requested)} FCFA</div>
+              <div class="w-payout">Reçu : ${money(payout)} FCFA</div>
+              <span class="pill ${status.cls}">${escapeHtml(status.label)}</span>
+            </div>
+
+          </div>
+
+          <div class="w-details">
+
+            <div class="details">
+
+              ${refRow}
+
+              <div class="detail-row"><span>Montant demandé</span><span>${money(requested)} FCFA</span></div>
+              <div class="detail-row"><span>Frais</span><span>${money(fee)} FCFA</span></div>
+              <div class="detail-row"><span>Montant à recevoir</span><span>${money(payout)} FCFA</span></div>
+              <div class="detail-row"><span>Statut actuel</span><span>${escapeHtml(status.label)}</span></div>
+
+              ${w.paid_at ? `<div class="detail-row"><span>Paiement effectué</span><span>${escapeHtml(formatDate(w.paid_at))}</span></div>` : ""}
+
+            </div>
+
+            ${w.rejection_reason ? `<div class="reject-note">Motif du rejet : ${escapeHtml(w.rejection_reason)}</div>` : ""}
+
+            ${renderTimeline(w.status_history)}
+
+          </div>
+
+        </article>
+      `;
+    }).join("");
+  }
+
+  $("history").addEventListener("click", (event) => {
+    const copyBtn = event.target.closest(".copy-ref");
+
+    if (copyBtn) {
+      event.stopPropagation();
+      copyText(copyBtn.dataset.copy);
+      return;
+    }
+
+    const card = event.target.closest(".withdrawal");
+    if (card) card.classList.toggle("open");
+  });
+
+  async function loadHistory() {
+    const container = $("history");
+
+    try {
+      const data = await fetchJson(WITHDRAWAL_URL, { method: "GET" });
+      if (!data) return;
+
+      const withdrawals = Array.isArray(data)
+        ? data
+        : (Array.isArray(data.withdrawals) ? data.withdrawals : []);
+
+      renderHistory(withdrawals);
+
+    } catch (error) {
+      console.error("Historique retrait:", error);
+
+      container.innerHTML = `
+        <div class="empty">
+          <div class="empty-title">Historique indisponible</div>
+          <div class="empty-text">${escapeHtml(error.message || "Impossible de récupérer les retraits.")}</div>
+        </div>
+      `;
+    }
+  }
+
+  /* ---------------- Montant et calcul ---------------- */
+
+  function readAmount() {
+    const digits = $("amount").value.replace(/\D/g, "");
+    return digits ? Number(digits) : 0;
+  }
+
+  function updateCalculation() {
+    const input = $("amount");
+    const digits = input.value.replace(/\D/g, "");
+
+    /* Affichage groupé : 10 000 */
+    input.value = digits ? money(digits) : "";
+
+    const amount = digits ? Number(digits) : 0;
+    const fee = Math.round(amount * FEE_RATE);
+    const payout = Math.max(0, amount - fee);
+
+    $("calcRequested").textContent = money(amount) + " FCFA";
+    $("calcFee").textContent = money(fee) + " FCFA";
+    $("calcPayout").textContent = money(payout) + " FCFA";
+
+    const help = $("amountHelp");
+
+    if (amount > 0 && amount < MIN_AMOUNT) {
+      help.textContent = "Le minimum de retrait est de 1 700 FCFA.";
+      help.className = "help bad";
+      input.classList.add("bad");
+    } else if (currentBalance !== null && amount > currentBalance) {
+      help.textContent = "Montant supérieur à votre solde disponible.";
+      help.className = "help bad";
+      input.classList.add("bad");
+    } else {
+      help.textContent = "Minimum autorisé : 1 700 FCFA.";
+      help.className = "help";
+      input.classList.remove("bad");
+    }
+  }
+
+  $("amount").addEventListener("input", updateCalculation);
+
+  /* ---------------- Mot de passe ---------------- */
+
+  $("pwdEye").innerHTML = ICON.eye;
+
+  $("pwdEye").addEventListener("click", () => {
+    const input = $("transactionPassword");
+    const isHidden = input.type === "password";
+
+    input.type = isHidden ? "text" : "password";
+    $("pwdEye").innerHTML = isHidden ? ICON.eyeOff : ICON.eye;
+    $("pwdEye").setAttribute(
+      "aria-label",
+      isHidden ? "Masquer le mot de passe" : "Afficher le mot de passe"
+    );
+  });
+
+  /* ---------------- Confirmation ---------------- */
+
+  const overlay = $("confirmOverlay");
+
+  function openConfirm(amount) {
+    const fee = Math.round(amount * FEE_RATE);
+    const payout = Math.max(0, amount - fee);
+
+    $("rcRequested").textContent = money(amount) + " FCFA";
+    $("rcFee").textContent = money(fee) + " FCFA";
+    $("rcPayout").textContent = money(payout) + " FCFA";
+
+    $("rcDestRow").hidden = !destLabel;
+    $("rcDest").textContent = destLabel;
+
+    overlay.classList.add("show");
+    overlay.setAttribute("aria-hidden", "false");
+  }
+
+  function closeConfirm() {
+    overlay.classList.remove("show");
+    overlay.setAttribute("aria-hidden", "true");
+  }
+
+  $("cancelBtn").addEventListener("click", () => { if (!busy) closeConfirm(); });
+
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay && !busy) closeConfirm();
+  });
+
+  $("withdrawalForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const amount = readAmount();
+    const password = $("transactionPassword").value;
+
+    if (!Number.isFinite(amount) || amount < MIN_AMOUNT) {
+      showError("Le montant minimum de retrait est de 1 700 FCFA.");
+      $("amount").focus();
+      return;
+    }
+
+    if (currentBalance !== null && amount > currentBalance) {
+      showError("Votre solde disponible est insuffisant.");
+      $("amount").focus();
+      return;
+    }
+
+    if (!password) {
+      showError("Veuillez saisir votre mot de passe de transaction.");
+      $("transactionPassword").focus();
+      return;
+    }
+
+    openConfirm(amount);
+  });
+
+  /* ---------------- Envoi du retrait ---------------- */
+
+  function setBusy(isBusy) {
+    busy = isBusy;
+
+    $("confirmBtn").disabled = isBusy;
+    $("cancelBtn").disabled = isBusy;
+    $("confirmBtn").classList.toggle("loading", isBusy);
+    $("confirmText").textContent = isBusy ? "Traitement…" : "Confirmer";
+  }
+
+  $("confirmBtn").addEventListener("click", async () => {
+    if (busy) return;
+
+    const amount = readAmount();
+    const password = $("transactionPassword").value;
+
+    setBusy(true);
+
+    try {
+      const data = await fetchJson(WITHDRAWAL_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: amount,
+          transaction_password: password
+        })
+      });
+
+      if (!data) return;
+
+      closeConfirm();
+
+      $("withdrawalForm").reset();
+      updateCalculation();
+
+      const reference =
+        data?.reference_code ||
+        data?.withdrawal?.reference_code ||
+        "votre demande";
+
+      showSuccess("Retrait enregistré avec succès. Référence : " + reference);
+
+      await Promise.all([loadBalance(), loadHistory()]);
+
+      $("historyCard").scrollIntoView({ behavior: "smooth", block: "start" });
+
+    } catch (error) {
+      console.error("Demande de retrait:", error);
+
+      closeConfirm();
+      showError(error.message || "Impossible d'enregistrer le retrait.");
+
+    } finally {
+      setBusy(false);
+    }
+  });
+
+  /* ---------------- Initialisation ---------------- */
+
+  function init() {
+    if (!sessionToken) {
+      window.location.replace(LOGIN_PAGE);
+      return;
+    }
+
+    $("logo").onerror = function () { this.style.display = "none"; };
+
+    renderBalance();
+    updateCalculation();
+
+    /* Les requêtes sont indépendantes : une erreur ne bloque pas les autres */
+    loadBalance();
+    loadDestination();
+    loadHistory();
+  }
+
+  init();
+</script>
+
+</body>
+</html>
