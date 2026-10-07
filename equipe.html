@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Équipe - HBD</title>
+
+  <style>
+    :root {
+      --navy: #0b1a8c;
+      --navy-dark: #081268;
+      --navy-deep: #050c4a;
+      --navy-soft: rgba(11, 26, 140, .08);
+      --navy-tint: #eef1fb;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --faint: #94a3b8;
+      --line: #e6eaf3;
+      --bg: #f3f5fb;
+      --white: #ffffff;
+      --green: #067647;
+      --green-bg: #ecfdf3;
+      --red: #b42318;
+      --red-bg: #fef3f2;
+      --nav-h: 68px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    button { font-family: inherit; }
+
+    .app {
+      position: relative;
+      max-width: 480px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: var(--bg);
+      padding-bottom: calc(var(--nav-h) + 24px + env(safe-area-inset-bottom, 0px));
+    }
+
+    svg.i {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: block;
+    }
+
+    /* ---------- En-tête ---------- */
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, .96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    .top::before {
+      content: "";
+      display: block;
+      height: 4px;
+      background: var(--navy);
+    }
+
+    .top-inner {
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo {
+      height: 46px;
+      width: auto;
+      max-width: 60%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .content { padding: 18px 16px 8px; }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.3px;
+      margin-bottom: 14px;
+    }
+
+    /* ---------- Invitation ---------- */
+    .invite-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      padding: 20px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 60%, var(--navy-deep) 100%);
+      box-shadow: 0 16px 34px rgba(11, 26, 140, .26);
+      margin-bottom: 16px;
+    }
+
+    .invite-card::before {
+      content: "";
+      position: absolute;
+      width: 210px;
+      height: 210px;
+      right: -70px;
+      top: -90px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .06);
+      pointer-events: none;
+    }
+
+    .invite-card > * { position: relative; }
+
+    .invite-title {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .invite-text {
+      margin: 5px 0 16px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, .75);
+    }
+
+    .ref-box {
+      background: var(--white);
+      color: var(--ink);
+      border-radius: 14px;
+      padding: 10px 10px 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .ref-box small {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .ref-code {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: var(--navy);
+      text-transform: uppercase;
+    }
+
+    .copy-btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: var(--navy);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-btn .i { width: 16px; height: 16px; }
+
+    .copy-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .link-box {
+      margin-top: 10px;
+      background: rgba(255, 255, 255, .11);
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, .88);
+      word-break: break-all;
+      line-height: 1.45;
+    }
+
+    .invite-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .invite-actions.two { grid-template-columns: 1.4fr 1fr; }
+
+    .btn-light,
+    .btn-ghost {
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .btn-light { background: #fff; color: var(--navy); }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, .14);
+      color: #fff;
+    }
+
+    .btn-light .i,
+    .btn-ghost .i { width: 17px; height: 17px; }
+
+    .btn-light:disabled,
+    .btn-ghost:disabled { opacity: .55; cursor: not-allowed; }
+
+    .btn-light:active,
+    .btn-ghost:active { transform: scale(.98); }
+
+    /* ---------- Résumé ---------- */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, .04);
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .summary-item {
+      background: var(--bg);
+      border-radius: 14px;
+      padding: 13px 6px;
+      text-align: center;
+      min-width: 0;
+    }
+
+    .summary-number {
+      font-size: 19px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .summary-item.accent .summary-number { color: var(--green); }
+
+    .summary-label {
+      margin-top: 5px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      color: var(--muted);
+    }
+
+    /* ---------- Niveaux ---------- */
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -.2px;
+      margin: 0 2px 10px;
+    }
+
+    .level-card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, .04);
+    }
+
+    .level-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .level-left {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .level-num {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .level-name {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .level-sub {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .rate {
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: var(--navy);
+      color: #fff;
+      font-size: 12.5px;
+      font-weight: 800;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .stat {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 11px 6px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 17px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-label {
+      margin-top: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      color: var(--muted);
+    }
+
+    .progress-bar {
+      height: 6px;
+      border-radius: 999px;
+      background: #e8ecf6;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .progress-bar span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--navy), #3347d4);
+    }
+
+    .commission {
+      margin-top: 12px;
+      border-radius: 13px;
+      padding: 13px 14px;
+      background: var(--green-bg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .commission-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    .commission-value {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: var(--green);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ---------- Info ---------- */
+    .info h3 {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .info-row {
+      display: flex;
+      gap: 11px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f2f8;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .info-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .info-row:first-of-type { padding-top: 0; }
+
+    .info-row strong { color: var(--ink); }
+
+    .info-dot {
+      flex: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ---------- États ---------- */
+    .skeleton {
+      display: block;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #eceff7 25%, #f6f8fc 50%, #eceff7 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.3s infinite linear;
+    }
+
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    .skel-level {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .error-box {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--red-bg);
+      color: var(--red);
+      border: 1px solid #fecdca;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .error-box.show { display: flex; }
+
+    .error-box button {
+      flex: none;
+      border: 0;
+      background: var(--red);
+      color: #fff;
+      border-radius: 9px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* ---------- Toast ---------- */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(var(--nav-h) + 22px + env(safe-area-inset-bottom, 0px));
+      transform: translate(-50%, 12px);
+      background: var(--ink);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+      z-index: 120;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    /* ---------- Navigation ---------- */
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0;
+      width: 100%;
+      max-width: 480px;
+      height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: rgba(255, 255, 255, .97);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid var(--line);
+      display: flex;
+      z-index: 50;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-decoration: none;
+      color: var(--faint);
+      font-size: 11px;
+      font-weight: 700;
+      position: relative;
+    }
+
+    .nav-item .i { width: 22px; height: 22px; }
+    .nav-item.active { color: var(--navy); }
+
+    .nav-item.active::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      width: 28px;
+      height: 3px;
+      border-radius: 0 0 4px 4px;
+      background: var(--navy);
+    }
+
+    @media (min-width: 481px) {
+      body { background: #e9edf8; }
+      .app { box-shadow: 0 0 50px rgba(11, 26, 140, .10); }
+    }
+
+    @media (max-width: 360px) {
+      .summary-number { font-size: 16px; }
+      .ref-code { font-size: 17px; letter-spacing: 2px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="top">
+    <div class="top-inner">
+      <img
+        class="logo"
+        id="logo"
+        src="https://uzgvaqewovipxorucjut.supabase.co/functions/v1/platform-logo"
+        alt="HBD"
+      >
+    </div>
+  </header>
+
+  <main class="content">
+
+    <h1 class="page-title">Mon équipe</h1>
+
+    <div id="errorBox" class="error-box" role="alert">
+      <span id="errorText"></span>
+      <button type="button" id="retryBtn">Réessayer</button>
+    </div>
+
+    <!-- INVITATION -->
+    <section class="invite-card">
+
+      <div class="invite-title">Inviter des membres</div>
+
+      <div class="invite-text">
+        Partagez votre code ou votre lien d'invitation. Les membres inscrits
+        avec votre code sont automatiquement rattachés à votre équipe.
+      </div>
+
+      <div class="ref-box">
+        <div>
+          <small>Mon code de parrainage</small>
+          <span id="refCode" class="ref-code">---</span>
+        </div>
+
+        <button type="button" class="copy-btn" id="copyCodeBtn" disabled>
+          <svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>
+          Copier
+        </button>
+      </div>
+
+      <div id="inviteLink" class="link-box">Chargement...</div>
+
+      <div class="invite-actions" id="inviteActions">
+        <button type="button" class="btn-light" id="copyLinkBtn" disabled>
+          <svg class="i" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Copier le lien d'invitation
+        </button>
+
+        <button type="button" class="btn-ghost" id="shareBtn" hidden disabled>
+          <svg class="i" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+          Partager
+        </button>
+      </div>
+
+    </section>
+
+    <!-- RÉSUMÉ -->
+    <section class="card">
+
+      <div class="card-title">Résumé de mon équipe</div>
+
+      <div class="summary-grid">
+
+        <div class="summary-item">
+          <div id="totalPeople" class="summary-number">0</div>
+          <div class="summary-label">INSCRITS</div>
+        </div>
+
+        <div class="summary-item">
+          <div id="totalActive" class="summary-number">0</div>
+          <div class="summary-label">ACTIFS</div>
+        </div>
+
+        <div class="summary-item accent">
+          <div id="totalCommission" class="summary-number">0</div>
+          <div class="summary-label">COMMISSION</div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- NIVEAUX -->
+    <h2 class="section-title">Mon équipe par niveau</h2>
+
+    <div id="levels">
+      <div class="skel-level"><span class="skeleton" style="width:40%;height:16px"></span><span class="skeleton" style="width:100%;height:56px;margin-top:16px"></span><span class="skeleton" style="width:100%;height:46px;margin-top:12px"></span></div>
+      <div class="skel-level"><span class="skeleton" style="width:40%;height:16px"></span><span class="skeleton" style="width:100%;height:56px;margin-top:16px"></span><span class="skeleton" style="width:100%;height:46px;margin-top:12px"></span></div>
+    </div>
+
+    <!-- INFO -->
+    <section class="card info">
+
+      <h3>Comment fonctionne l'équipe ?</h3>
+
+      <div class="info-row">
+        <span class="info-dot">1</span>
+        <span><strong>Niveau 1</strong> : personnes directement invitées par vous. Commission de 20%.</span>
+      </div>
+
+      <div class="info-row">
+        <span class="info-dot">2</span>
+        <span><strong>Niveau 2</strong> : personnes invitées par votre niveau 1. Commission de 3%.</span>
+      </div>
+
+      <div class="info-row">
+        <span class="info-dot">3</span>
+        <span><strong>Niveau 3</strong> : personnes invitées par votre niveau 2. Commission de 1%.</span>
+      </div>
+
+      <div class="info-row">
+        <span class="info-dot">✓</span>
+        <span>Un membre est compté comme <strong>actif</strong> lorsqu'il a effectué au moins un investissement.</span>
+      </div>
+
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast" role="status">Copié</div>
+
+  <nav class="bottom-nav" aria-label="Navigation principale">
+
+    <a href="dashboard.html" class="nav-item">
+      <svg class="i" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V11z"/></svg>
+      Accueil
+    </a>
+
+    <a href="produits.html" class="nav-item">
+      <svg class="i" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
+      Produits
+    </a>
+
+    <a href="equipe.html" class="nav-item active">
+      <svg class="i" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M21 21v-2a4 4 0 0 0-3-3.87M15 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Équipe
+    </a>
+
+    <a href="moi.html" class="nav-item">
+      <svg class="i" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Moi
+    </a>
+
+  </nav>
+
+</div>
+
+<script>
+  const TEAM_URL = "https://uzgvaqewovipxorucjut.supabase.co/functions/v1/team";
+  const LOGIN_PAGE = "login.html";
+
+  /* Page d'inscription (page d'accueil du site) */
+  const SIGNUP_PAGE = "index.html";
+
+  const RATES = { 1: "20%", 2: "3%", 3: "1%" };
+
+  const sessionToken = sessionStorage.getItem("hbd_session_token");
+
+  const $ = (id) => document.getElementById(id);
+
+  let invitationLink = "";
+  let referralCode = "";
+
+  /* ---------------- Utilitaires ---------------- */
+
+  function formatNumber(value) {
+    return new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 })
+      .format(Number(value || 0));
+  }
+
+  function formatMoney(value) {
+    return formatNumber(value) + " FCFA";
+  }
+
+  let toastTimer = null;
+
+  function showToast(message) {
+    const el = $("toast");
+    el.textContent = message;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("show"), 1800);
+  }
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast("Copié");
+    } catch {
+      const area = document.createElement("textarea");
+      area.value = text;
+      area.style.position = "fixed";
+      area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.select();
+
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch { ok = false; }
+
+      area.remove();
+      showToast(ok ? "Copié" : "Copie impossible");
+    }
+  }
+
+  function buildInviteLink(code) {
+    return new URL(
+      SIGNUP_PAGE + "?ref=" + encodeURIComponent(code),
+      window.location.href
+    ).href;
+  }
+
+  /* ---------------- Actions ---------------- */
+
+  $("copyCodeBtn").addEventListener("click", () => {
+    if (referralCode) copyText(referralCode);
+  });
+
+  $("copyLinkBtn").addEventListener("click", () => {
+    if (invitationLink) copyText(invitationLink);
+  });
+
+  const shareBtn = $("shareBtn");
+
+  if (navigator.share) {
+  shareBtn.hidden = false;
+    $("inviteActions").classList.add("two");
+
+    shareBtn.addEventListener("click", async () => {
+      if (!invitationLink) return;
+
+      try {
+        await navigator.share({
+          title: "Rejoignez-moi sur HBD",
+          text: "Inscrivez-vous avec mon lien d'invitation :",
+          url: invitationLink
+        });
+      } catch {
+        /* partage annulé par l'utilisateur */
+      }
+    });
+  }
+
+  /* ---------------- Niveaux ---------------- */
+
+  function renderLevel(level) {
+    const n = Number(level.level || 1);
+    const people = Number(level.people || 0);
+    const active = Number(level.active || 0);
+    const commission = Number(level.commission || 0);
+    const activity = people > 0 ? Math.round((active / people) * 100) : 0;
+
+    return `
+      <section class="level-card">
+
+        <div class="level-head">
+          <div class="level-left">
+            <div class="level-num">${n}</div>
+            <div>
+              <div class="level-name">Niveau ${n}</div>
+              <div class="level-sub">${n === 1 ? "Invités directs" : "Invités du niveau " + (n - 1)}</div>
+            </div>
+          </div>
+
+          <div class="rate">${RATES[n] || "—"}</div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-number">${formatNumber(people)}</div>
+            <div class="stat-label">INSCRITS</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-number">${formatNumber(active)}</div>
+            <div class="stat-label">ACTIFS</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-number">${activity}%</div>
+            <div class="stat-label">ACTIVITÉ</div>
+          </div>
+        </div>
+
+        <div class="progress-bar"><span style="width:${activity}%"></span></div>
+
+        <div class="commission">
+          <div class="commission-label">Commission reçue</div>
+          <div class="commission-value">${formatMoney(commission)}</div>
+        </div>
+
+      </section>
+    `;
+  }
+
+  /* ---------------- Chargement ---------------- */
+
+  async function loadTeam() {
+    $("errorBox").classList.remove("show");
+
+    try {
+      const response = await fetch(TEAM_URL, {
+        method: "GET",
+        headers: {
+          "x-session-token": sessionToken,
+          "Accept": "application/json"
+        }
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.status === 401) {
+        sessionStorage.removeItem("hbd_session_token");
+        sessionStorage.removeItem("hbd_user_id");
+        window.location.replace(LOGIN_PAGE);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || "Impossible de charger l'équipe.");
+      }
+
+      referralCode = data.referral_code || "";
+
+      $("refCode").textContent = referralCode || "---";
+
+      /*
+        Le lien est construit ici (index.html?ref=CODE) pour qu'il
+        pointe toujours vers la bonne page d'inscription.
+      */
+      invitationLink = referralCode ? buildInviteLink(referralCode) : "";
+
+      $("inviteLink").textContent =
+        invitationLink || "Code de parrainage indisponible.";
+
+      $("copyCodeBtn").disabled = !referralCode;
+      $("copyLinkBtn").disabled = !invitationLink;
+      shareBtn.disabled = !invitationLink;
+
+      $("totalPeople").textContent = formatNumber(data.total_people);
+      $("totalActive").textContent = formatNumber(data.total_active);
+      $("totalCommission").textContent = formatNumber(data.total_commission);
+
+      const levels = Array.isArray(data.levels) ? data.levels : [];
+
+      $("levels").innerHTML = [1, 2, 3].map(n => {
+        const found = levels.find(x => Number(x.level) === n);
+
+        return renderLevel(
+          found || { level: n, people: 0, active: 0, commission: 0 }
+        );
+      }).join("");
+
+    } catch (error) {
+      console.error(error);
+
+      $("errorText").textContent = error.message || "Une erreur est survenue.";
+      $("errorBox").classList.add("show");
+      $("inviteLink").textContent = "Indisponible pour le moment.";
+      $("levels").innerHTML = "";
+    }
+  }
+
+  $("retryBtn").addEventListener("click", loadTeam);
+
+  /* ---------------- Initialisation ---------------- */
+
+  if (!sessionToken) {
+    window.location.replace(LOGIN_PAGE);
+  } else {
+    loadTeam();
+  }
+</script>
+
+</body>
+</html>
