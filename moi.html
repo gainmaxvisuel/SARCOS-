@@ -1,0 +1,496 @@
+<!DOCTYPE html><html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Moi - SARCOS</title><style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f5f5;
+  color:#111;
+  padding-bottom:82px;
+}
+
+.header{
+  height:70px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-bottom:1px solid #e8e8e8;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.logo{
+  height:42px;
+  max-width:150px;
+  object-fit:contain;
+}
+
+.container{
+  width:100%;
+  max-width:520px;
+  margin:auto;
+  padding:16px;
+}
+
+/* PROFIL */
+.profile-card{
+  background:#111;
+  color:#fff;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:15px;
+}
+
+.profile-top{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.avatar{
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:#fff;
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:700;
+}
+
+.profile-info{
+  flex:1;
+}
+
+.profile-title{
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:5px;
+}
+
+.profile-phone{
+  font-size:13px;
+  opacity:.75;
+}
+
+.status{
+  display:inline-block;
+  margin-top:10px;
+  background:#fff;
+  color:#111;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:700;
+}
+
+/* SOLDE */
+.balance-card{
+  background:#fff;
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:15px;
+  box-shadow:0 3px 12px rgba(0,0,0,.04);
+}
+
+.balance-label{
+  color:#777;
+  font-size:13px;
+  margin-bottom:7px;
+}
+
+.balance{
+  font-size:28px;
+  font-weight:800;
+}
+
+.balance-sub{
+  margin-top:7px;
+  font-size:13px;
+  color:#777;
+}
+
+/* MENU */
+.section-title{
+  font-size:14px;
+  font-weight:700;
+  margin:20px 3px 10px;
+  color:#555;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+}
+
+.menu{
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 3px 12px rgba(0,0,0,.04);
+}
+
+.menu-item{
+  width:100%;
+  min-height:62px;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:13px 16px;
+  border:0;
+  border-bottom:1px solid #eee;
+  background:#fff;
+  color:#111;
+  text-decoration:none;
+  cursor:pointer;
+  text-align:left;
+}
+
+.menu-item:last-child{
+  border-bottom:0;
+}
+
+.menu-icon{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:#f2f2f2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  flex-shrink:0;
+}
+
+.menu-content{
+  flex:1;
+}
+
+.menu-title{
+  font-size:14px;
+  font-weight:700;
+}
+
+.menu-description{
+  font-size:11px;
+  color:#888;
+  margin-top:3px;
+}
+
+.arrow{
+  color:#999;
+  font-size:20px;
+}
+
+/* CADEAU */
+.gift-item .menu-icon{
+  background:#111;
+  color:#fff;
+}
+
+.gift-item .menu-title{
+  font-weight:800;
+}
+
+/* DECONNEXION */
+.logout{
+  width:100%;
+  margin-top:20px;
+  height:52px;
+  border:1px solid #ddd;
+  background:#fff;
+  border-radius:15px;
+  font-size:14px;
+  font-weight:700;
+  color:#111;
+  cursor:pointer;
+}
+
+/* NAVIGATION */
+.bottom-nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  height:70px;
+  background:#fff;
+  border-top:1px solid #e6e6e6;
+  display:flex;
+  z-index:50;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+
+.nav-item{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  color:#999;
+  font-size:11px;
+  gap:4px;
+}
+
+.nav-icon{
+  font-size:20px;
+  line-height:20px;
+}
+
+.nav-item.active{
+  color:#111;
+  font-weight:700;
+}
+
+.loading{
+  text-align:center;
+  padding:30px 10px;
+  color:#777;
+  font-size:13px;
+}
+
+.error{
+  background:#fff1f1;
+  color:#a00000;
+  border-radius:14px;
+  padding:14px;
+  font-size:13px;
+  margin-bottom:15px;
+  display:none;
+}
+</style></head><body><header class="header">
+  <img id="logo" class="logo" src="" alt="SARCOS">
+</header><main class="container">  <div id="errorBox" class="error"></div>  <section class="profile-card">
+    <div class="profile-top">
+      <div class="avatar" id="avatar">U</div>  <div class="profile-info">
+    <div class="profile-title">Mon compte</div>
+    <div class="profile-phone" id="phone">Chargement...</div>
+    <div class="status" id="status">...</div>
+  </div>
+</div>
+
+  </section>  <section class="balance-card">
+    <div class="balance-label">Solde disponible</div>
+    <div class="balance" id="balance">0 FCFA</div>
+    <div class="balance-sub">
+      Total gagné : <strong id="totalEarned">0 FCFA</strong>
+    </div>
+  </section>  <div class="section-title">Mon compte</div>  <div class="menu"><a class="menu-item gift-item" href="cadeau.html">
+  <div class="menu-icon">🎁</div>
+  <div class="menu-content">
+    <div class="menu-title">Cadeau</div>
+    <div class="menu-description">Consulter et récupérer vos cadeaux</div>
+  </div>
+  <div class="arrow">›</div>
+</a>
+
+<a class="menu-item" href="compte-retrait.html">
+  <div class="menu-icon">💳</div>
+  <div class="menu-content">
+    <div class="menu-title">Compte de retrait</div>
+    <div class="menu-description">Gérer votre compte de paiement</div>
+  </div>
+  <div class="arrow">›</div>
+</a>
+
+<a class="menu-item" href="transactions.html">
+  <div class="menu-icon">📋</div>
+  <div class="menu-content">
+    <div class="menu-title">Mes transactions</div>
+    <div class="menu-description">Consulter l'historique de vos opérations</div>
+  </div>
+  <div class="arrow">›</div>
+</a>
+
+<a class="menu-item" href="securite.html">
+  <div class="menu-icon">🔐</div>
+  <div class="menu-content">
+    <div class="menu-title">Sécurité</div>
+    <div class="menu-description">Gérer les paramètres de sécurité</div>
+  </div>
+  <div class="arrow">›</div>
+</a>
+
+  </div>  <div class="section-title">Informations</div>  <div class="menu"><a class="menu-item" href="confidentialite.html">
+  <div class="menu-icon">🔒</div>
+  <div class="menu-content">
+    <div class="menu-title">Confidentialité</div>
+    <div class="menu-description">Protection et utilisation de vos données</div>
+  </div>
+  <div class="arrow">›</div>
+</a>
+
+<a class="menu-item" href="politique.html">
+  <div class="menu-icon">📜</div>
+  <div class="menu-content">
+    <div class="menu-title">Politique</div>
+    <div class="menu-description">Conditions et règles de la plateforme</div>
+  </div>
+  <div class="arrow">›</div>
+</a>
+
+  </div>  <button class="logout" id="logoutBtn">
+    Se déconnecter
+  </button>  <div id="loading" class="loading">
+    Chargement de votre compte...
+  </div></main><nav class="bottom-nav">  <a class="nav-item" href="dashboard.html">
+    <span class="nav-icon">⌂</span>
+    <span>Accueil</span>
+  </a>  <a class="nav-item" href="produits.html">
+    <span class="nav-icon">▣</span>
+    <span>Produits</span>
+  </a>  <a class="nav-item" href="equipe.html">
+    <span class="nav-icon">♧</span>
+    <span>Équipe</span>
+  </a>  <a class="nav-item active" href="moi.html">
+    <span class="nav-icon">◉</span>
+    <span>Moi</span>
+  </a></nav><script>
+const API_BASE =
+  "https://uzgvaqewovipxorucjut.supabase.co/functions/v1";
+
+const sessionToken =
+  sessionStorage.getItem("hbd_session_token");
+
+if (!sessionToken) {
+  window.location.href = "connexion.html";
+}
+
+/* LOGO */
+document.getElementById("logo").src =
+  API_BASE + "/platform-logo";
+
+/* FORMAT FCFA */
+function formatFCFA(value){
+  const number = Number(value || 0);
+
+  return new Intl.NumberFormat("fr-FR", {
+    maximumFractionDigits: 0
+  }).format(number) + " FCFA";
+}
+
+/* AFFICHER ERREUR */
+function showError(message){
+  const box = document.getElementById("errorBox");
+  box.textContent = message;
+  box.style.display = "block";
+}
+
+/* CHARGEMENT PROFIL */
+async function loadProfile(){
+
+  try{
+
+    const response = await fetch(
+      API_BASE + "/dashboard",
+      {
+        method:"GET",
+        headers:{
+          "x-session-token":sessionToken
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    if(!response.ok){
+      throw new Error(
+        data.message ||
+        data.error ||
+        "Impossible de charger votre compte."
+      );
+    }
+
+    /*
+      Le dashboard retourne les informations
+      utilisateur. On accepte plusieurs noms
+      de champs pour rester compatible avec
+      la réponse actuelle du serveur.
+    */
+
+    const user =
+      data.user ||
+      data.profile ||
+      data;
+
+    const phone =
+      user.phone ||
+      user.telephone ||
+      "";
+
+    const country =
+      user.country_code ||
+      "";
+
+    const balance =
+      user.balance ??
+      data.balance ??
+      0;
+
+    const totalEarned =
+      user.total_earned ??
+      data.total_earned ??
+      0;
+
+    const status =
+      user.status ||
+      "active";
+
+    document.getElementById("phone").textContent =
+      country + " " + phone;
+
+    document.getElementById("balance").textContent =
+      formatFCFA(balance);
+
+    document.getElementById("totalEarned").textContent =
+      formatFCFA(totalEarned);
+
+    document.getElementById("status").textContent =
+      status === "active" ? "COMPTE ACTIF" : status.toUpperCase();
+
+    /*
+      Première lettre du numéro comme avatar
+    */
+    const avatarLetter =
+      phone ? phone.replace(/\D/g,"").slice(-1) : "U";
+
+    document.getElementById("avatar").textContent =
+      avatarLetter || "U";
+
+  }catch(error){
+
+    console.error(error);
+
+    showError(
+      error.message ||
+      "Une erreur est survenue lors du chargement."
+    );
+
+  }finally{
+
+    document.getElementById("loading").style.display =
+      "none";
+  }
+}
+
+/* DECONNEXION */
+document.getElementById("logoutBtn")
+.addEventListener("click",function(){
+
+  sessionStorage.removeItem("hbd_session_token");
+  sessionStorage.removeItem("hbd_user_id");
+
+  window.location.href = "connexion.html";
+});
+
+loadProfile();
+</script></body>
+  </html>
