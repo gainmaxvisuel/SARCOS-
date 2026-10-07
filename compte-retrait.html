@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Compte de retrait - HBD</title>
+
+  <style>
+    :root {
+      --navy: #0b1a8c;
+      --navy-dark: #081268;
+      --navy-deep: #050c4a;
+      --navy-soft: rgba(11, 26, 140, .08);
+      --navy-tint: #eef1fb;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --faint: #94a3b8;
+      --line: #dbe1ee;
+      --field: #f6f8fd;
+      --bg: #f3f5fb;
+      --white: #ffffff;
+      --green: #067647;
+      --green-bg: #ecfdf3;
+      --red: #b42318;
+      --red-bg: #fef3f2;
+      --field-h: 50px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    button { font-family: inherit; }
+
+    .app {
+      position: relative;
+      max-width: 480px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: var(--bg);
+      padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+    }
+
+    svg.i {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: block;
+    }
+
+    /* ---------- En-tête ---------- */
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, .96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    .top::before {
+      content: "";
+      display: block;
+      height: 4px;
+      background: var(--navy);
+    }
+
+    .top-inner {
+      position: relative;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back {
+      position: absolute;
+      left: 14px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .back:active { transform: scale(.94); }
+
+    .logo {
+      height: 46px;
+      width: auto;
+      max-width: 55%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .content { padding: 18px 16px 0; }
+
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.3px;
+    }
+
+    .subtitle {
+      margin: 5px 0 16px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    /* ---------- Compte enregistré ---------- */
+    .saved {
+      display: none;
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 60%, var(--navy-deep) 100%);
+      box-shadow: 0 14px 30px rgba(11, 26, 140, .26);
+    }
+
+    .saved.show { display: block; }
+
+    .saved::before {
+      content: "";
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      right: -65px;
+      top: -85px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .06);
+      pointer-events: none;
+    }
+
+    .saved > * { position: relative; }
+
+    .saved-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .saved-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .7);
+    }
+
+    .saved-ok {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .15);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .saved-ok .i { width: 12px; height: 12px; stroke-width: 3; color: #4ade80; }
+
+    .saved-name {
+      margin-top: 12px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -.2px;
+      word-break: break-word;
+    }
+
+    .saved-row {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .saved-phone {
+      font-size: 15px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: rgba(255, 255, 255, .9);
+    }
+
+    .saved-operator {
+      padding: 6px 11px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, .16);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    /* ---------- Cartes de formulaire ---------- */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, .04);
+    }
+
+    .step-head {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-bottom: 14px;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      flex: none;
+      border-radius: 9px;
+      background: var(--navy);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-title {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    /* ---------- Opérateurs ---------- */
+    .operators {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .operator {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 66px;
+      padding: 10px;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      background: var(--white);
+      text-align: left;
+      cursor: pointer;
+      color: var(--ink);
+      transition: border-color .15s, background .15s, box-shadow .15s;
+    }
+
+    .operator:active { transform: scale(.98); }
+
+    .operator.active {
+      border-color: var(--navy);
+      background: var(--navy-tint);
+      box-shadow: 0 0 0 3px var(--navy-soft);
+    }
+
+    .op-logo {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      flex: none;
+      border-radius: 11px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.2px;
+    }
+
+    .op-logo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #fff;
+      padding: 3px;
+    }
+
+    .op-name {
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.25;
+      min-width: 0;
+    }
+
+    .op-check {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .op-check .i { width: 11px; height: 11px; stroke-width: 3.2; }
+
+    .operator.active .op-check { display: flex; }
+
+    /* ---------- Champs ---------- */
+    .field { margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 5px;
+    }
+
+    .input {
+      width: 100%;
+      height: var(--field-h);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      background: var(--field);
+      color: var(--ink);
+      padding: 0 14px;
+      font-family: inherit;
+      font-size: 16px;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s, background .15s;
+    }
+
+    .input::placeholder { color: #9aa5b8; }
+
+    .input:focus {
+      border-color: var(--navy);
+      background: var(--white);
+      box-shadow: 0 0 0 3.5px var(--navy-soft);
+    }
+
+    .input.ok { border-color: #12b76a; }
+    .input.bad { border-color: #f04438; }
+
+    .hint {
+      margin-top: 6px;
+      font-size: 11.5px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .hint.ok { color: var(--green); font-weight: 600; }
+    .hint.bad { color: var(--red); font-weight: 600; }
+
+    .password-wrap { position: relative; }
+    .password-wrap .input { padding-right: 50px; }
+
+    .eye {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 48px;
+      height: var(--field-h);
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .eye .i { width: 20px; height: 20px; }
+
+    .eye:focus-visible {
+      outline: 2px solid var(--navy);
+      outline-offset: -4px;
+      border-radius: 10px;
+    }
+
+    /* ---------- Bouton ---------- */
+    .save {
+      width: 100%;
+      height: 54px;
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(11, 26, 140, .28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      transition: transform .12s, opacity .2s;
+    }
+
+    .save:active { transform: scale(.98); }
+    .save:disabled { opacity: .7; cursor: not-allowed; }
+
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid rgba(255, 255, 255, .35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---------- Sécurité ---------- */
+    .security {
+      margin-top: 16px;
+      display: flex;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--navy-tint);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .security .shield {
+      width: 36px;
+      height: 36px;
+      flex: none;
+      border-radius: 11px;
+      background: var(--white);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .security .shield .i { width: 19px; height: 19px; }
+
+    .security strong {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    /* ---------- Message flottant ---------- */
+    .message {
+      position: fixed;
+      left: 50%;
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      width: calc(100% - 32px);
+      max-width: 448px;
+      transform: translate(-50%, -12px);
+      z-index: 200;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .16);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+    }
+
+    .message.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .message.error {
+      background: #fff0ef;
+      color: var(--red);
+      border: 1px solid #ffc9c5;
+    }
+
+    .message.success {
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid #abefc6;
+    }
+
+    @media (min-width: 481px) {
+      body { background: #e9edf8; }
+      .app { box-shadow: 0 0 50px rgba(11, 26, 140, .10); }
+    }
+
+    @media (max-width: 360px) {
+      .operators { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation-duration: 1.5s !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div id="message" class="message" role="alert" aria-live="assertive"></div>
+
+  <header class="top">
+    <div class="top-inner">
+      <a href="moi.html" class="back" aria-label="Retour">
+        <svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+      </a>
+
+      <img
+        id="logo"
+        class="logo"
+        src="https://uzgvaqewovipxorucjut.supabase.co/functions/v1/platform-logo"
+        alt="HBD"
+      >
+    </div>
+  </header>
+
+  <main class="content">
+
+    <h1 class="title">Compte de retrait</h1>
+
+    <p class="subtitle">
+      Enregistrez le compte Mobile Money sur lequel vos retraits seront envoyés.
+      Vous pouvez modifier ces informations à tout moment.
+    </p>
+
+    <!-- COMPTE ENREGISTRÉ -->
+    <section id="savedBox" class="saved" aria-live="polite">
+      <div class="saved-top">
+        <span class="saved-label">Compte enregistré</span>
+        <span class="saved-ok">
+          <svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
+          Actif
+        </span>
+      </div>
+
+      <div id="savedName" class="saved-name">—</div>
+
+      <div class="saved-row">
+        <span id="savedPhone" class="saved-phone">—</span>
+        <span id="savedOperator" class="saved-operator">—</span>
+      </div>
+    </section>
+
+    <!-- 1. OPÉRATEUR -->
+    <section class="card">
+
+      <div class="step-head">
+        <span class="step-num">1</span>
+        <span class="step-title">Choisir l'opérateur</span>
+      </div>
+
+      <div class="operators" id="operators" role="radiogroup" aria-label="Opérateur Mobile Money">
+
+        <button type="button" class="operator" role="radio" aria-checked="false" data-operator="Orange Money">
+          <span class="op-logo" style="background:#ff7900">OM
+            <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_Orange_Money.svg" alt="" onerror="this.remove()">
+          </span>
+          <span class="op-name">Orange Money</span>
+          <span class="op-check"><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>
+        </button>
+
+        <button type="button" class="operator" role="radio" aria-checked="false" data-operator="Moov Money">
+          <span class="op-logo" style="background:#0a5ea8">MV
+            <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Moov_Money_Flooz.png" alt="" onerror="this.remove()">
+          </span>
+          <span class="op-name">Moov Money</span>
+          <span class="op-check"><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>
+        </button>
+
+        <button type="button" class="operator" role="radio" aria-checked="false" data-operator="Wave">
+          <span class="op-logo" style="background:#1dc8f2">W
+            <img src="https://cdn.simpleicons.org/wave" alt="" onerror="this.remove()">
+          </span>
+          <span class="op-name">Wave</span>
+          <span class="op-check"><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>
+        </button>
+
+        <button type="button" class="operator" role="radio" aria-checked="false" data-operator="T-MONEY">
+          <span class="op-logo" style="background:#0b1a8c">TM
+            <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Tmoney_Brand_Logo.png" alt="" onerror="this.remove()">
+          </span>
+          <span class="op-name">T-MONEY</span>
+          <span class="op-check"><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>
+        </button>
+
+        <button type="button" class="operator" role="radio" aria-checked="false" data-operator="MTN">
+          <span class="op-logo" style="background:#ffcc00;color:#111">MTN
+            <img src="https://cdn.simpleicons.org/mtn" alt="" onerror="this.remove()">
+          </span>
+          <span class="op-name">MTN</span>
+          <span class="op-check"><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- 2. BÉNÉFICIAIRE -->
+    <section class="card">
+
+      <div class="step-head">
+        <span class="step-num">2</span>
+        <span class="step-title">Bénéficiaire</span>
+      </div>
+
+      <div class="field">
+        <label for="name">Nom complet du bénéficiaire</label>
+        <input
+          id="name"
+          class="input"
+          type="text"
+          autocomplete="name"
+          placeholder="Ex : STEEVE AKAKPO"
+          maxlength="100"
+        >
+        <div class="hint">Le nom doit correspondre au titulaire du compte Mobile Money.</div>
+      </div>
+
+      <div class="field">
+        <label for="phone">Numéro du compte</label>
+        <input
+          id="phone"
+          class="input"
+          type="tel"
+          inputmode="numeric"
+          autocomplete="tel"
+          placeholder="Ex : 70000000"
+          maxlength="15"
+        >
+        <div class="hint">Uniquement les chiffres, sans espaces ni caractères spéciaux.</div>
+      </div>
+
+      <div class="field">
+        <label for="phoneConfirm">Confirmer le numéro du compte</label>
+        <input
+          id="phoneConfirm"
+          class="input"
+          type="tel"
+          inputmode="numeric"
+          autocomplete="off"
+          placeholder="Saisissez-le à nouveau"
+          maxlength="15"
+        >
+        <div id="phoneHint" class="hint" hidden></div>
+      </div>
+
+    </section>
+
+    <!-- 3. SÉCURITÉ -->
+    <section class="card">
+
+      <div class="step-head">
+        <span class="step-num">3</span>
+        <span class="step-title">Mot de passe de transaction</span>
+      </div>
+
+      <div class="field">
+        <label for="transactionPassword">Mot de passe de transaction</label>
+        <div class="password-wrap">
+          <input
+            id="transactionPassword"
+            class="input"
+            type="password"
+            inputmode="numeric"
+            autocomplete="new-password"
+            placeholder="4 caractères minimum"
+            maxlength="50"
+          >
+          <button type="button" class="eye" data-target="transactionPassword" aria-label="Afficher le mot de passe"></button>
+        </div>
+        <div class="hint" id="pwdIntro">Il sécurise chacune de vos demandes de retrait.</div>
+      </div>
+
+      <div class="field">
+        <label for="transactionPasswordConfirm">Confirmer le mot de passe</label>
+        <div class="password-wrap">
+          <input
+            id="transactionPasswordConfirm"
+            class="input"
+            type="password"
+            inputmode="numeric"
+            autocomplete="new-password"
+            placeholder="Saisissez-le à nouveau"
+            maxlength="50"
+          >
+          <button type="button" class="eye" data-target="transactionPasswordConfirm" aria-label="Afficher le mot de passe"></button>
+        </div>
+        <div id="pwdHint" class="hint" hidden></div>
+      </div>
+
+    </section>
+
+    <button type="button" id="saveBtn" class="save">
+      <span id="saveText">Enregistrer le compte</span>
+      <span id="spinner" class="spinner"></span>
+    </button>
+
+    <div class="security">
+      <span class="shield">
+        <svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+      </span>
+      <div>
+        <strong>Vos données sont protégées</strong>
+        Vos informations de retrait sont enregistrées sur le serveur. Le mot de passe de transaction n'est jamais affiché après son enregistrement.
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<script>
+  const FUNCTIONS_BASE = "https://uzgvaqewovipxorucjut.supabase.co/functions/v1";
+  const ACCOUNT_URL = FUNCTIONS_BASE + "/p-home-withdrawal-account";
+  const LOGIN_PAGE = "login.html";
+
+  const sessionToken = sessionStorage.getItem("hbd_session_token");
+
+  if (!sessionToken) {
+    window.location.replace(LOGIN_PAGE);
+  }
+
+  const $ = (id) => document.getElementById(id);
+
+  const savedBox = $("savedBox");
+  const nameInput = $("name");
+  const phoneInput = $("phone");
+  const phoneConfirmInput = $("phoneConfirm");
+  const passwordInput = $("transactionPassword");
+  const passwordConfirmInput = $("transactionPasswordConfirm");
+  const saveBtn = $("saveBtn");
+
+  let selectedOperator = "";
+  let hasSavedAccount = false;
+  let messageTimer = null;
+
+  const EYE =
+    '<svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+  const EYE_OFF =
+    '<svg class="i" viewBox="0 0 24 24"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+
+  /* ---------------- Messages ---------------- */
+
+  function showMessage(text, type) {
+    const box = $("message");
+
+    box.className = "message " + type + " show";
+    box.textContent = text;
+
+    clearTimeout(messageTimer);
+    messageTimer = setTimeout(() => box.classList.remove("show"), 4500);
+  }
+
+  /* ---------------- Utilitaires ---------------- */
+
+  function groupPhone(phone) {
+    const digits = String(phone || "").replace(/\D/g, "");
+    return digits.replace(/(\d{2})(?=\d)/g, "$1 ").trim();
+  }
+
+  function onlyDigits(input) {
+    input.value = input.value.replace(/\D/g, "");
+  }
+
+  /* ---------------- Opérateurs ---------------- */
+
+  function selectOperator(card) {
+    document.querySelectorAll(".operator").forEach(x => {
+      const active = x === card;
+      x.classList.toggle("active", active);
+      x.setAttribute("aria-checked", String(active));
+    });
+
+    selectedOperator = card.dataset.operator;
+  }
+
+  document.querySelectorAll(".operator").forEach(card => {
+    card.addEventListener("click", () => selectOperator(card));
+  });
+
+  /* ---------------- Mots de passe ---------------- */
+
+  document.querySelectorAll(".eye").forEach(button => {
+    button.innerHTML = EYE;
+
+    button.addEventListener("click", () => {
+      const input = $(button.dataset.target);
+      const hidden = input.type === "password";
+
+      input.type = hidden ? "text" : "password";
+      button.innerHTML = hidden ? EYE_OFF : EYE;
+      button.setAttribute(
+        "aria-label",
+        hidden ? "Masquer le mot de passe" : "Afficher le mot de passe"
+      );
+    });
+  });
+
+  /* ---------------- Vérifications en direct ---------------- */
+
+  function setHint(el, input, text, state) {
+    if (!text) {
+      el.hidden = true;
+      input.classList.remove("ok", "bad");
+      return;
+    }
+
+    el.hidden = false;
+    el.textContent = text;
+    el.className = "hint " + state;
+
+    input.classList.toggle("ok", state === "ok");
+    input.classList.toggle("bad", state === "bad");
+  }
+
+  function checkPhoneMatch() {
+    const a = phoneInput.value;
+    const b = phoneConfirmInput.value;
+
+    if (!b) return setHint($("phoneHint"), phoneConfirmInput, "", "");
+
+    if (a === b) {
+      setHint($("phoneHint"), phoneConfirmInput, "Les numéros correspondent.", "ok");
+    } else {
+      setHint($("phoneHint"), phoneConfirmInput, "Les numéros ne correspondent pas.", "bad");
+    }
+  }
+
+  function checkPasswordMatch() {
+    const a = passwordInput.value;
+    const b = passwordConfirmInput.value;
+
+    if (!b) return setHint($("pwdHint"), passwordConfirmInput, "", "");
+
+    if (a === b) {
+      setHint($("pwdHint"), passwordConfirmInput, "Les mots de passe correspondent.", "ok");
+    } else {
+      setHint($("pwdHint"), passwordConfirmInput, "Les mots de passe ne correspondent pas.", "bad");
+    }
+  }
+
+  phoneInput.addEventListener("input", () => { onlyDigits(phoneInput); checkPhoneMatch(); });
+  phoneConfirmInput.addEventListener("input", () => { onlyDigits(phoneConfirmInput); checkPhoneMatch(); });
+  passwordInput.addEventListener("input", checkPasswordMatch);
+  passwordConfirmInput.addEventListener("input", checkPasswordMatch);
+
+  /* ---------------- Compte enregistré ---------------- */
+
+  function showSaved(name, phone, operator) {
+    savedBox.classList.add("show");
+
+    $("savedName").textContent = name || "Titulaire";
+    $("savedPhone").textContent = groupPhone(phone) || "—";
+    $("savedOperator").textContent = operator || "Opérateur non indiqué";
+
+    hasSavedAccount = true;
+    $("saveText").textContent = "Mettre à jour le compte";
+    $("pwdIntro").textContent =
+      "Par sécurité, saisissez à nouveau votre mot de passe de transaction pour valider la modification.";
+  }
+
+  /* ---------------- Requête serveur ---------------- */
+
+  async function apiRequest(url, options = {}) {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        "x-session-token": sessionToken,
+        ...(options.headers || {})
+      }
+    });
+
+    if (response.status === 401) {
+      sessionStorage.removeItem("hbd_session_token");
+      sessionStorage.removeItem("hbd_user_id");
+      window.location.replace(LOGIN_PAGE);
+      throw new Error("Session expirée.");
+    }
+
+    const text = await response.text();
+    let data = {};
+
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      data = { message: text };
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || data.message || "Une erreur serveur est survenue."
+      );
+    }
+
+    return data;
+  }
+
+  /* ---------------- Chargement du compte existant ---------------- */
+
+  async function loadAccount() {
+    try {
+      /*
+        Si la fonction GET n'est pas déployée, on affiche simplement
+        le formulaire vide, sans inventer de données.
+      */
+      const response = await fetch(ACCOUNT_URL, {
+        method: "GET",
+        headers: { "x-session-token": sessionToken }
+      });
+
+      if (response.status === 401) {
+        sessionStorage.removeItem("hbd_session_token");
+        sessionStorage.removeItem("hbd_user_id");
+        window.location.replace(LOGIN_PAGE);
+        return;
+      }
+
+      if (response.status === 404) return;
+
+      const text = await response.text();
+      if (!text || !response.ok) return;
+
+      let data;
+      try { data = JSON.parse(text); } catch { return; }
+
+      const account =
+        data.account || data.withdrawal_account || data.data || data;
+
+      if (!account || typeof account !== "object") return;
+      if (!account.beneficiary_phone && !account.phone) return;
+
+      const operator = account.operator || "";
+      const phone = account.beneficiary_phone || account.phone || "";
+      const name = account.beneficiary_name || account.name || "";
+
+      showSaved(name, phone, operator);
+
+      nameInput.value = name;
+      phoneInput.value = phone;
+      phoneConfirmInput.value = phone;
+
+      if (operator) {
+        const card = [...document.querySelectorAll(".operator")].find(
+          x => x.dataset.operator.toLowerCase() === operator.toLowerCase()
+        );
+
+        if (card) selectOperator(card);
+      }
+
+      checkPhoneMatch();
+
+    } catch (error) {
+      console.log("Compte existant non chargé:", error);
+    }
+  }
+
+  /* ---------------- Enregistrement ---------------- */
+
+  function setSaving(isSaving) {
+    saveBtn.disabled = isSaving;
+    $("saveText").style.display = isSaving ? "none" : "inline";
+    $("spinner").style.display = isSaving ? "block" : "none";
+  }
+
+  saveBtn.addEventListener("click", async () => {
+    if (saveBtn.disabled) return;
+
+    const beneficiaryName = nameInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const phoneConfirm = phoneConfirmInput.value.trim();
+    const password = passwordInput.value;
+    const passwordConfirm = passwordConfirmInput.value;
+
+    if (!selectedOperator) {
+      showMessage("Sélectionnez votre opérateur Mobile Money.", "error");
+      return;
+    }
+
+    if (beneficiaryName.length < 2) {
+      showMessage("Entrez le nom complet du bénéficiaire.", "error");
+      nameInput.focus();
+      return;
+    }
+
+    if (!/^[0-9]{6,15}$/.test(phone)) {
+      showMessage("Le numéro du compte doit contenir uniquement 6 à 15 chiffres.", "error");
+      phoneInput.focus();
+      return;
+    }
+
+    if (phone !== phoneConfirm) {
+      showMessage("Les deux numéros de compte ne correspondent pas.", "error");
+      phoneConfirmInput.focus();
+      return;
+    }
+
+    if (password.length < 4) {
+      showMessage("Le mot de passe de transaction doit contenir au moins 4 caractères.", "error");
+      passwordInput.focus();
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      showMessage("Les deux mots de passe de transaction ne correspondent pas.", "error");
+      passwordConfirmInput.focus();
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      /*
+        Correspond à la fonction SQL upsert_withdrawal_account(
+          p_session_token, p_beneficiary_phone, p_beneficiary_name,
+          p_operator, p_transaction_password
+        )
+      */
+      const result = await apiRequest(ACCOUNT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          beneficiary_phone: phone,
+          beneficiary_name: beneficiaryName,
+          operator: selectedOperator,
+          transaction_password: password
+        })
+      });
+
+      showMessage(
+        result.message || "Compte de retrait enregistré avec succès.",
+        "success"
+      );
+
+      showSaved(beneficiaryName, phone, selectedOperator);
+
+      passwordInput.value = "";
+      passwordConfirmInput.value = "";
+      checkPasswordMatch();
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+    } catch (error) {
+      if (error.message !== "Session expirée.") {
+        showMessage(error.message || "Impossible d'enregistrer le compte.", "error");
+      }
+
+    } finally {
+      setSaving(false);
+    }
+  });
+
+  /* ---------------- Initialisation ---------------- */
+
+  if (sessionToken) {
+    loadAccount();
+  }
+</script>
+
+</body>
+</html>
