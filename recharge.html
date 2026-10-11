@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Recharge - HBD</title>
+
+  <style>
+    :root {
+      --navy: #0b1a8c;
+      --navy-dark: #081268;
+      --navy-deep: #050c4a;
+      --navy-soft: rgba(11, 26, 140, .08);
+      --navy-tint: #eef1fb;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --faint: #94a3b8;
+      --line: #dbe1ee;
+      --card-line: #e6eaf3;
+      --field: #f6f8fd;
+      --bg: #f3f5fb;
+      --white: #ffffff;
+      --green: #067647;
+      --green-bg: #ecfdf3;
+      --red: #b42318;
+      --red-bg: #fef3f2;
+      --amber: #b54708;
+      --amber-bg: #fffaeb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overscroll-behavior: none;
+    }
+
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    button, input { font-family: inherit; }
+
+    svg.i {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: block;
+    }
+
+    /* ---------- Cadre de l'application ---------- */
+    .app {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      height: 100dvh;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ---------- En-tête ---------- */
+    .top {
+      flex: none;
+      background: var(--white);
+      border-bottom: 1px solid var(--card-line);
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    .top::before {
+      content: "";
+      display: block;
+      height: 4px;
+      background: var(--navy);
+    }
+
+    .top-inner {
+      position: relative;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back {
+      position: absolute;
+      left: 14px;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .back:active { transform: scale(.94); }
+    .back .i { width: 20px; height: 20px; }
+
+    .logo {
+      height: 42px;
+      width: auto;
+      max-width: 50%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* ---------- Progression ---------- */
+    .progress {
+      flex: none;
+      background: var(--white);
+      padding: 12px 20px 14px;
+      border-bottom: 1px solid var(--card-line);
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 9px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .progress-meta span:first-child { color: var(--muted); }
+    .progress-meta span:last-child { color: var(--navy); }
+
+    .bars {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .bar {
+      height: 5px;
+      border-radius: 999px;
+      background: #e3e8f4;
+      overflow: hidden;
+    }
+
+    .bar::after {
+      content: "";
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--navy), #3347d4);
+      transition: width .35s ease;
+    }
+
+    .bar.done::after,
+    .bar.current::after { width: 100%; }
+
+    /* ---------- Zone des étapes ---------- */
+    .steps {
+      flex: 1;
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .step {
+      display: none;
+      padding: 22px 18px 24px;
+    }
+
+    .step.active {
+      display: block;
+      animation: enter .28s ease both;
+    }
+
+    .step.back-dir.active { animation-name: enterBack; }
+
+    @keyframes enter {
+      from { opacity: 0; transform: translateX(22px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes enterBack {
+      from { opacity: 0; transform: translateX(-22px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .step-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 18px rgba(11, 26, 140, .24);
+    }
+
+    .step-icon .i { width: 24px; height: 24px; }
+
+    .step-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.4px;
+      line-height: 1.2;
+    }
+
+    .step-sub {
+      margin: 6px 0 20px;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    /* ---------- Étape 1 : pays ---------- */
+    .countries {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .country {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      background: var(--white);
+      text-align: left;
+      color: var(--ink);
+      cursor: pointer;
+      transition: border-color .15s, background .15s, box-shadow .15s;
+    }
+
+    .country:active { transform: scale(.985); }
+
+    .country.active {
+      border-color: var(--navy);
+      background: var(--navy-tint);
+      box-shadow: 0 0 0 3.5px var(--navy-soft);
+    }
+
+    .flag {
+      width: 46px;
+      height: 46px;
+      flex: none;
+      border-radius: 14px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+
+    .country.active .flag { background: var(--white); }
+
+    .country-text { flex: 1; min-width: 0; }
+
+    .country-name {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .country-meta {
+      margin-top: 2px;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    .radio {
+      width: 22px;
+      height: 22px;
+      flex: none;
+      border-radius: 50%;
+      border: 2px solid #cbd3e6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      transition: background .15s, border-color .15s;
+    }
+
+    .radio .i { width: 12px; height: 12px; stroke-width: 3.4; opacity: 0; }
+
+    .country.active .radio {
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .country.active .radio .i { opacity: 1; }
+
+    /* ---------- Champs ---------- */
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 6px;
+    }
+
+    .input {
+      width: 100%;
+      height: 54px;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      background: var(--white);
+      color: var(--ink);
+      padding: 0 14px;
+      font-size: 17px;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .input::placeholder { color: #9aa5b8; }
+
+    .input:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3.5px var(--navy-soft);
+    }
+
+    .input.bad { border-color: #f04438; }
+    .input.good { border-color: #12b76a; }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .hint.bad { color: var(--red); font-weight: 600; }
+    .hint.good { color: var(--green); font-weight: 600; }
+
+    /* ---------- Étape 2 : montant ---------- */
+    .amount-box {
+      background: var(--white);
+      border: 1.5px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 16px 14px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .amount-box:focus-within {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3.5px var(--navy-soft);
+    }
+
+    .amount-box.bad { border-color: #f04438; }
+
+    .amount-box label {
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .amount-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .amount-input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      text-align: right;
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--navy);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .amount-input::placeholder {
+      color: #c3cadb;
+      font-weight: 700;
+    }
+
+    .amount-unit {
+      flex: none;
+      width: 62px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .chips {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .chip {
+      border: 1.5px solid var(--line);
+      background: var(--white);
+      color: var(--navy);
+      border-radius: 12px;
+      padding: 12px 4px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+
+    .chip:active { transform: scale(.97); }
+
+    .chip.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+
+    /* ---------- Étape 3 : numéro ---------- */
+    .country-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px 7px 9px;
+      border-radius: 999px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .country-chip span:first-child { font-size: 18px; }
+
+    .phone-wrap { position: relative; }
+
+    .phone-wrap .dial {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 54px;
+      padding: 0 12px 0 14px;
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      border-right: 1.5px solid var(--line);
+      pointer-events: none;
+    }
+
+    .phone-wrap .input { padding-left: 84px; }
+
+    .note {
+      margin-top: 16px;
+      display: flex;
+      gap: 11px;
+      padding: 13px 14px;
+      border-radius: 14px;
+      background: var(--amber-bg);
+      color: var(--amber);
+      font-size: 12.5px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .note .i { width: 18px; height: 18px; flex: none; margin-top: 1px; }
+
+    /* ---------- Étape 4 : récapitulatif ---------- */
+    .total-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      padding: 20px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 60%, var(--navy-deep) 100%);
+      box-shadow: 0 14px 30px rgba(11, 26, 140, .26);
+      margin-bottom: 14px;
+    }
+
+    .total-card::before {
+      content: "";
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      right: -65px;
+      top: -85px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .06);
+      pointer-events: none;
+    }
+
+    .total-card > * { position: relative; }
+
+    .total-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .78);
+    }
+
+    .total-value {
+      margin-top: 6px;
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .total-value small {
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, .75);
+      margin-left: 6px;
+      letter-spacing: 0;
+    }
+
+    .recap {
+      background: var(--white);
+      border: 1px solid var(--card-line);
+      border-radius: 18px;
+      padding: 4px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, .04);
+    }
+
+    .recap-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid #f0f2f8;
+    }
+
+    .recap-row:last-child { border-bottom: 0; }
+
+    .recap-icon {
+      width: 36px;
+      height: 36px;
+      flex: none;
+      border-radius: 11px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .recap-icon .i { width: 18px; height: 18px; }
+
+    .recap-text { flex: 1; min-width: 0; }
+
+    .recap-text small {
+      display: block;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .recap-text strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 14.5px;
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .edit {
+      flex: none;
+      border: 0;
+      background: var(--navy-tint);
+      color: var(--navy);
+      border-radius: 9px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .trust {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--navy-tint);
+    }
+
+    .trust-row {
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #475569;
+    }
+
+    .trust-row .i {
+      width: 18px;
+      height: 18px;
+      flex: none;
+      margin-top: 1px;
+      color: var(--navy);
+    }
+
+    .trust-row strong { color: var(--ink); }
+
+    /* ---------- Barre d'action ---------- */
+    .actions {
+      flex: none;
+      background: var(--white);
+      border-top: 1px solid var(--card-line);
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .next {
+      width: 100%;
+      height: 54px;
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(11, 26, 140, .28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      transition: transform .12s, opacity .2s, box-shadow .2s;
+    }
+
+    .next:active { transform: scale(.98); }
+
+    .next:disabled {
+      opacity: .45;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .next .i { width: 19px; height: 19px; }
+
+    .secure {
+      margin-top: 9px;
+      text-align: center;
+      font-size: 11.5px;
+      color: var(--faint);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .secure .i { width: 12px; height: 12px; }
+
+    /* ---------- Message flottant ---------- */
+    .message {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      z-index: 60;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .16);
+      opacity: 0;
+      transform: translateY(-12px);
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+    }
+
+    .message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .message.error {
+      background: #fff0ef;
+      color: var(--red);
+      border: 1px solid #ffc9c5;
+    }
+
+    /* ---------- Redirection ---------- */
+    .redirect {
+      position: absolute;
+      inset: 0;
+      z-index: 80;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+
+    .redirect.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .ring {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 4px solid var(--navy-tint);
+      border-top-color: var(--navy);
+      animation: spin .8s linear infinite;
+      margin-bottom: 22px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .redirect h2 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.3px;
+    }
+
+    .redirect p {
+      margin-top: 8px;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .ref-badge {
+      margin-top: 16px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: var(--navy-tint);
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .5px;
+    }
+
+    .redirect a {
+      margin-top: 22px;
+      color: var(--navy);
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (min-width: 481px) {
+      body { background: #e9edf8; }
+
+      .app {
+        height: min(100dvh - 40px, 780px);
+        border-radius: 24px;
+        box-shadow: 0 18px 50px rgba(11, 26, 140, .14);
+      }
+    }
+
+    @media (max-height: 640px) {
+      .step { padding-top: 16px; }
+      .step-icon { display: none; }
+      .step-sub { margin-bottom: 14px; }
+      .amount-input { font-size: 32px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation-duration: 1.5s !important; }
+      .step.active { animation: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div id="message" class="message error" role="alert" aria-live="assertive"></div>
+
+  <header class="top">
+    <div class="top-inner">
+      <button type="button" class="back" id="backBtn" aria-label="Retour">
+        <svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+
+      <img
+        id="logo"
+        class="logo"
+        src="https://uzgvaqewovipxorucjut.supabase.co/functions/v1/platform-logo"
+        alt="HBD"
+      >
+    </div>
+  </header>
+
+  <div class="progress" aria-label="Progression">
+    <div class="progress-meta">
+      <span id="stepCount">Étape 1 sur 4</span>
+      <span id="stepLabel">Pays</span>
+    </div>
+
+    <div class="bars">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  </div>
+
+  <main class="steps" id="steps">
+
+    <!-- ÉTAPE 1 : PAYS -->
+    <section class="step" data-step="1">
+
+      <div class="step-icon">
+        <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+      </div>
+
+      <h1 class="step-title">Choisissez votre pays</h1>
+      <p class="step-sub">Sélectionnez le pays du compte Mobile Money qui effectuera le paiement.</p>
+
+      <div class="countries" id="countries" role="radiogroup" aria-label="Pays du paiement">
+
+        <button type="button" class="country" role="radio" aria-checked="false" data-code="BF" data-name="Burkina Faso" data-dial="+226" data-flag="🇧🇫">
+          <span class="flag">🇧🇫</span>
+          <span class="country-text">
+            <span class="country-name">Burkina Faso</span>
+            <span class="country-meta">Indicatif +226</span>
+          </span>
+          <span class="radio"><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>
+        </button>
+
+        <button type="button" class="country" role="radio" aria-checked="false" data-code="BJ" data-name="Bénin" data-dial="+229" data-flag="🇧🇯">
+          <span class="flag">🇧🇯</span>
+          <span class="country-text">
+            <span class="country-name">Bénin</span>
+            <span class="country-meta">Indicatif +229</span>
+          </span>
+          <span class="radio"><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>
+        </button>
+
+        <button type="button" class="country" role="radio" aria-checked="false" data-code="TG" data-name="Togo" data-dial="+228" data-flag="🇹🇬">
+          <span class="flag">🇹🇬</span>
+          <span class="country-text">
+            <span class="country-name">Togo</span>
+            <span class="country-meta">Indicatif +228</span>
+          </span>
+          <span class="radio"><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>
+        </button>
+
+        <button type="button" class="country" role="radio" aria-checked="false" data-code="CI" data-name="Côte d’Ivoire" data-dial="+225" data-flag="🇨🇮">
+          <span class="flag">🇨🇮</span>
+          <span class="country-text">
+            <span class="country-name">Côte d’Ivoire</span>
+            <span class="country-meta">Indicatif +225</span>
+          </span>
+          <span class="radio"><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- ÉTAPE 2 : MONTANT -->
+    <section class="step" data-step="2">
+
+      <div class="step-icon">
+        <svg class="i" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+      </div>
+
+      <h1 class="step-title">Montant du dépôt</h1>
+      <p class="step-sub">Indiquez la somme que vous souhaitez ajouter à votre compte.</p>
+
+      <div class="amount-box" id="amountBox">
+        <label for="amount">Montant à déposer</label>
+
+        <div class="amount-row">
+          <input
+            id="amount"
+            class="amount-input"
+            type="text"
+            inputmode="numeric"
+            placeholder="0"
+            autocomplete="off"
+            maxlength="12"
+          >
+          <span class="amount-unit">FCFA</span>
+        </div>
+
+        <div class="chips" id="chips">
+          <button type="button" class="chip" data-amount="3000">3 000</button>
+          <button type="button" class="chip" data-amount="5000">5 000</button>
+          <button type="button" class="chip" data-amount="10000">10 000</button>
+          <button type="button" class="chip" data-amount="25000">25 000</button>
+          <button type="button" class="chip" data-amount="50000">50 000</button>
+          <button type="button" class="chip" data-amount="100000">100 000</button>
+        </div>
+      </div>
+
+      <div id="amountHint" class="hint">Dépôt minimum : 3 000 FCFA.</div>
+
+    </section>
+
+    <!-- ÉTAPE 3 : NUMÉRO PAYEUR -->
+    <section class="step" data-step="3">
+
+      <div class="step-icon">
+        <svg class="i" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
+      </div>
+
+      <h1 class="step-title">Numéro du payeur</h1>
+      <p class="step-sub">Entrez le numéro Mobile Money qui sera réellement utilisé pour payer.</p>
+
+      <div class="country-chip">
+        <span id="chipFlag">🌍</span>
+        <span id="chipName">—</span>
+      </div>
+
+      <label for="phone">Numéro Mobile Money</label>
+
+      <div class="phone-wrap">
+        <span class="dial" id="dial">+---</span>
+
+        <input
+          id="phone"
+          class="input"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel"
+          placeholder="70 12 34 56"
+          maxlength="20"
+        >
+      </div>
+
+      <div id="phoneHint" class="hint">Saisissez le numéro sans espace ni caractère spécial.</div>
+
+      <div class="note">
+        <svg class="i" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+        <span>Le paiement doit être validé depuis ce numéro. Vérifiez-le attentivement avant de continuer.</span>
+      </div>
+
+    </section>
+
+    <!-- ÉTAPE 4 : CONFIRMATION -->
+    <section class="step" data-step="4">
+
+      <div class="step-icon">
+        <svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+      </div>
+
+      <h1 class="step-title">Vérifiez et confirmez</h1>
+      <p class="step-sub">Contrôlez les informations avant de passer au paiement sécurisé.</p>
+
+      <div class="total-card">
+        <div class="total-label">Montant à payer</div>
+        <div class="total-value"><span id="rcTotal">0</span><small>FCFA</small></div>
+      </div>
+
+      <div class="recap">
+
+        <div class="recap-row">
+          <span class="recap-icon" id="rcFlag">🌍</span>
+          <span class="recap-text">
+            <small>Pays du paiement</small>
+            <strong id="rcCountry">—</strong>
+          </span>
+          <button type="button" class="edit" data-edit="1">Modifier</button>
+        </div>
+
+        <div class="recap-row">
+          <span class="recap-icon">
+            <svg class="i" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+          </span>
+          <span class="recap-text">
+            <small>Montant du dépôt</small>
+            <strong id="rcAmount">—</strong>
+          </span>
+          <button type="button" class="edit" data-edit="2">Modifier</button>
+        </div>
+
+        <div class="recap-row">
+          <span class="recap-icon">
+            <svg class="i" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
+          </span>
+          <span class="recap-text">
+            <small>Numéro du payeur</small>
+            <strong id="rcPhone">—</strong>
+          </span>
+          <button type="button" class="edit" data-edit="3">Modifier</button>
+        </div>
+
+      </div>
+
+      <div class="trust">
+
+        <div class="trust-row">
+          <svg class="i" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span><strong>Paiement sécurisé.</strong> Vous allez être redirigé vers WestPay pour valider le paiement Mobile Money.</span>
+        </div>
+
+        <div class="trust-row">
+          <svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
+          <span><strong>Crédit automatique.</strong> Votre solde est mis à jour dès la confirmation officielle du paiement, jamais par la simple redirection.</span>
+        </div>
+
+        <div class="trust-row">
+          <svg class="i" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+          <span>Ne recommencez pas un dépôt déjà payé.</span>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="actions">
+    <button type="button" class="next" id="nextBtn" disabled>
+      <span id="nextText">Continuer</span>
+    </button>
+
+    <div class="secure">
+      <svg class="i" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Paiement vérifié côté serveur
+    </div>
+  </footer>
+
+  <!-- REDIRECTION -->
+  <div class="redirect" id="redirect" aria-live="polite">
+    <div class="ring"></div>
+    <h2>Redirection vers WestPay</h2>
+    <p>Votre demande de paiement est créée.<br>Ne fermez pas cette page.</p>
+    <div class="ref-badge" id="refBadge" hidden></div>
+    <a href="#" id="manualLink" hidden>Cliquez ici si la redirection ne démarre pas</a>
+  </div>
+
+</div>
+
+<script>
+  "use strict";
+
+  const API = "https://uzgvaqewovipxorucjut.supabase.co/functions/v1/westpay-deposit";
+  const SESSION_KEY = "hbd_session_token";
+  const LOGIN_PAGE = "login.html";
+  const BACK_PAGE = "dashboard.html";
+  const CHECKOUT_HOST = "checkout1.westpay.cfd";
+  const MIN_AMOUNT = 3000;
+  const TOTAL_STEPS = 4;
+
+  const $ = (id) => document.getElementById(id);
+
+  const STEP_LABELS = ["Pays", "Montant", "Numéro", "Confirmation"];
+  const NEXT_LABELS = ["Continuer", "Continuer", "Voir le récapitulatif", ""];
+
+  const state = {
+    step: 1,
+    country: null,   /* { code, name, dial, flag } */
+    amount: 0,
+    phone: ""
+  };
+
+  let busy = false;
+  let messageTimer = null;
+
+  const moneyFormatter = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
+
+  function money(value) {
+    return moneyFormatter.format(Number(value || 0));
+  }
+
+  /* ---------------- Message ---------------- */
+
+  function showError(text) {
+    const box = $("message");
+
+    box.textContent = text;
+    box.classList.add("show");
+
+    clearTimeout(messageTimer);
+    messageTimer = setTimeout(() => box.classList.remove("show"), 5000);
+  }
+
+  /* ---------------- Validation ---------------- */
+
+  function cleanPhone(value) {
+    return String(value || "").replace(/[\s()-]/g, "");
+  }
+
+  function phoneValid(value) {
+    const raw = String(value || "").trim();
+
+    if (!/^[0-9+ ()-]{8,20}$/.test(raw)) return false;
+
+    const digits = raw.replace(/\D/g, "");
+    return digits.length >= 8 && digits.length <= 15;
+  }
+
+  function amountValid() {
+    return Number.isSafeInteger(state.amount) && state.amount >= MIN_AMOUNT;
+  }
+
+  function stepValid(step) {
+    if (step === 1) return !!state.country;
+    if (step === 2) return amountValid();
+    if (step === 3) return phoneValid(state.phone);
+    return true;
+  }
+
+  /* Dernière étape accessible compte tenu des données déjà saisies */
+  function maxReachableStep() {
+    let step = 1;
+
+    while (step < TOTAL_STEPS && stepValid(step)) step++;
+
+    return step;
+  }
+
+  /* ---------------- Navigation ---------------- */
+
+  function render(direction) {
+    document.querySelectorAll(".step").forEach(section => {
+      const active = Number(section.dataset.step) === state.step;
+
+      section.classList.toggle("active", active);
+      section.classList.toggle("back-dir", direction === "back");
+    });
+
+    document.querySelectorAll(".bar").forEach((bar, index) => {
+      bar.classList.toggle("done", index + 1 < state.step);
+      bar.classList.toggle("current", index + 1 === state.step);
+    });
+
+    $("stepCount").textContent = "Étape " + state.step + " sur " + TOTAL_STEPS;
+    $("stepLabel").textContent = STEP_LABELS[state.step - 1];
+
+    $("steps").scrollTop = 0;
+
+    if (state.step === 3) {
+      $("chipFlag").textContent = state.country?.flag || "🌍";
+      $("chipName").textContent = state.country?.name || "—";
+      $("dial").textContent = state.country?.dial || "+---";
+    }
+
+    if (state.step === 4) {
+      $("rcFlag").textContent = state.country?.flag || "🌍";
+      $("rcCountry").textContent = state.country ? state.country.name + " (" + state.country.dial + ")" : "—";
+      $("rcAmount").textContent = money(state.amount) + " FCFA";
+      $("rcPhone").textContent = state.phone.trim();
+      $("rcTotal").textContent = money(state.amount);
+    }
+
+    updateNext();
+  }
+
+  function updateNext() {
+    const button = $("nextBtn");
+    const text = $("nextText");
+
+    if (state.step === TOTAL_STEPS) {
+      text.textContent = "Payer " + money(state.amount) + " FCFA";
+
+      if (!button.querySelector(".i")) {
+        button.insertAdjacentHTML(
+          "afterbegin",
+          '<svg class="i" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
+        );
+      }
+    } else {
+      text.textContent = NEXT_LABELS[state.step - 1];
+
+      const icon = button.querySelector(".i");
+      if (icon) icon.remove();
+    }
+
+    button.disabled = busy || !stepValid(state.step);
+  }
+
+  function goTo(step, direction, push) {
+    state.step = Math.max(1, Math.min(TOTAL_STEPS, step));
+
+    if (push) {
+      history.pushState({ step: state.step }, "");
+    }
+
+    render(direction);
+  }
+
+  window.addEventListener("popstate", (event) => {
+    if (busy) return;
+
+    const target = event.state && event.state.step ? event.state.step : 1;
+    const allowed = Math.min(target, maxReachableStep());
+    const direction = allowed < state.step ? "back" : "forward";
+
+    state.step = allowed;
+    render(direction);
+  });
+
+  $("backBtn").addEventListener("click", () => {
+    if (busy) return;
+
+    if (state.step > 1) {
+      history.back();
+    } else {
+      window.location.href = BACK_PAGE;
+    }
+  });
+
+  document.querySelectorAll("[data-edit]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (busy) return;
+      goTo(Number(button.dataset.edit), "back", true);
+    });
+  });
+
+  /* ---------------- Étape 1 : pays ---------------- */
+
+  document.querySelectorAll(".country").forEach(card => {
+    card.addEventListener("click", () => {
+      document.querySelectorAll(".country").forEach(x => {
+        const active = x === card;
+        x.classList.toggle("active", active);
+        x.setAttribute("aria-checked", String(active));
+      });
+
+      state.country = {
+        code: card.dataset.code,
+        name: card.dataset.name,
+        dial: card.dataset.dial,
+        flag: card.dataset.flag
+      };
+
+      updateNext();
+    });
+  });
+
+  /* ---------------- Étape 2 : montant ---------------- */
+
+  const amountInput = $("amount");
+
+  function refreshAmount() {
+    const digits = amountInput.value.replace(/\D/g, "").replace(/^0+/, "");
+
+    state.amount = digits ? Number(digits) : 0;
+    amountInput.value = digits ? money(digits) : "";
+
+    document.querySelectorAll(".chip").forEach(chip =>
+      chip.classList.toggle("active", Number(chip.dataset.amount) === state.amount)
+    );
+
+    const hint = $("amountHint");
+    const box = $("amountBox");
+
+    if (state.amount > 0 && state.amount < MIN_AMOUNT) {
+      hint.textContent = "Le dépôt minimum est de 3 000 FCFA.";
+      hint.className = "hint bad";
+      box.classList.add("bad");
+    } else if (state.amount >= MIN_AMOUNT) {
+      hint.textContent = "Vous paierez exactement " + money(state.amount) + " FCFA.";
+      hint.className = "hint good";
+      box.classList.remove("bad");
+    } else {
+      hint.textContent = "Dépôt minimum : 3 000 FCFA.";
+      hint.className = "hint";
+      box.classList.remove("bad");
+    }
+
+    updateNext();
+  }
+
+  amountInput.addEventListener("input", refreshAmount);
+
+  $("chips").addEventListener("click", (event) => {
+    const chip = event.target.closest(".chip");
+    if (!chip) return;
+
+    amountInput.value = chip.dataset.amount;
+    refreshAmount();
+  });
+
+  /* ---------------- Étape 3 : numéro ---------------- */
+
+  const phoneInput = $("phone");
+
+  phoneInput.addEventListener("input", () => {
+    /* Seuls les chiffres, +, espaces, parenthèses et tirets sont autorisés */
+    phoneInput.value = phoneInput.value.replace(/[^0-9+ ()-]/g, "");
+
+    state.phone = phoneInput.value;
+
+    const hint = $("phoneHint");
+    const digits = state.phone.replace(/\D/g, "");
+
+    if (!state.phone) {
+      hint.textContent = "Saisissez le numéro sans espace ni caractère spécial.";
+      hint.className = "hint";
+      phoneInput.classList.remove("bad", "good");
+    } else if (phoneValid(state.phone)) {
+      hint.textContent = "Numéro valide.";
+      hint.className = "hint good";
+      phoneInput.classList.remove("bad");
+      phoneInput.classList.add("good");
+    } else {
+      hint.textContent = digits.length < 8
+        ? "Le numéro doit contenir au moins 8 chiffres."
+        : "Vérifiez le numéro Mobile Money.";
+      hint.className = "hint bad";
+      phoneInput.classList.remove("good");
+      phoneInput.classList.add("bad");
+    }
+
+    updateNext();
+  });
+
+  /* ---------------- Paiement ---------------- */
+
+  function showRedirect(reference, url) {
+    $("redirect").classList.add("show");
+
+    if (reference) {
+      $("refBadge").textContent = "Réf. " + reference;
+      $("refBadge").hidden = false;
+    }
+
+    $("manualLink").href = url;
+
+    setTimeout(() => {
+      $("manualLink").hidden = false;
+    }, 4000);
+  }
+
+  async function submitPayment() {
+    if (busy) return;
+
+    const token = sessionStorage.getItem(SESSION_KEY);
+
+    if (!token) {
+      showError("Votre session a expiré. Connectez-vous de nouveau.");
+      setTimeout(() => { window.location.href = LOGIN_PAGE; }, 900);
+      return;
+    }
+
+    if (!state.country || !amountValid() || !phoneValid(state.phone)) {
+      showError("Veuillez compléter toutes les étapes.");
+      goTo(maxReachableStep(), "back", true);
+      return;
+    }
+
+    busy = true;
+    $("nextBtn").disabled = true;
+    $("nextText").textContent = "Préparation du paiement…";
+
+    try {
+      const response = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_token: token,
+          amount: state.amount,
+          payer_phone: cleanPhone(state.phone),
+          country: state.country.code
+        })
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.status === 401) {
+        sessionStorage.removeItem(SESSION_KEY);
+        sessionStorage.removeItem("hbd_user_id");
+        showError("Votre session a expiré. Connectez-vous de nouveau.");
+        setTimeout(() => { window.location.href = LOGIN_PAGE; }, 900);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || "Impossible de créer le paiement.");
+      }
+
+      if (data.status !== "pending" || !data.checkout_url) {
+        throw new Error("Le serveur n’a pas fourni un lien de paiement valide.");
+      }
+
+      const url = new URL(data.checkout_url);
+
+      if (url.protocol !== "https:" || url.hostname !== CHECKOUT_HOST) {
+        throw new Error("Le lien de paiement n’est pas valide.");
+      }
+
+      showRedirect(data.reference_code || "", url.toString());
+
+      setTimeout(() => { window.location.href = url.toString(); }, 700);
+
+    } catch (error) {
+      console.error("Dépôt:", error);
+
+      showError(error instanceof Error ? error.message : "Une erreur est survenue.");
+
+      busy = false;
+      updateNext();
+    }
+  }
+
+  $("nextBtn").addEventListener("click", () => {
+    if (busy || !stepValid(state.step)) return;
+
+    if (state.step === TOTAL_STEPS) {
+      submitPayment();
+    } else {
+      goTo(state.step + 1, "forward", true);
+    }
+  });
+
+  /* Retour depuis WestPay : on remet la page dans un état utilisable */
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+      busy = false;
+      $("redirect").classList.remove("show");
+      $("manualLink").hidden = true;
+      updateNext();
+    }
+  });
+
+  /* ---------------- Initialisation ---------------- */
+
+  $("logo").onerror = function () { this.style.display = "none"; };
+
+  history.replaceState({ step: 1 }, "");
+  render("forward");
+
+  if (!sessionStorage.getItem(SESSION_KEY)) {
+    showError("Vous devez être connecté pour effectuer un dépôt.");
+  }
+</script>
+
+</body>
+</html>
